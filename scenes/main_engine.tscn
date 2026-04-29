@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://dfao1nv5mrsqd"]
+
+[ext_resource type="Texture2D" uid="uid://ddr2f5lxl3qtd" path="res://assets/parallax/1.png" id="1_5s5uv"]
+[ext_resource type="Script" uid="uid://dche5hjgt5ikc" path="res://scripts/main_engine.gd" id="1_smoar"]
+[ext_resource type="Script" uid="uid://mqyhvmqavfd7" path="res://scripts/camera.gd" id="3_rwauq"]
+[ext_resource type="Texture2D" uid="uid://2jrdaahhr5ry" path="res://assets/parallax/2.png" id="3_y5x8j"]
+[ext_resource type="Texture2D" uid="uid://1pnbab8eqyjw" path="res://assets/parallax/3.png" id="4_p0sv3"]
+[ext_resource type="Texture2D" uid="uid://d37gpn1py34m4" path="res://icon.svg" id="4_rwauq"]
+[ext_resource type="Texture2D" uid="uid://dadprfqt1rqbl" path="res://assets/parallax/4.png" id="5_82g61"]
+[ext_resource type="Texture2D" uid="uid://bww8qhutgjo24" path="res://assets/parallax/5.png" id="6_u8t1u"]
+[ext_resource type="Texture2D" uid="uid://cjyhy7of3ynry" path="res://assets/parallax/6.png" id="7_cql7i"]
+[ext_resource type="Texture2D" uid="uid://binstbuf18i3v" path="res://assets/floor.png" id="8_p0sv3"]
+
+[node name="mainEngine" type="Node" unique_id=280952739]
+script = ExtResource("1_smoar")
+
+[node name="UI" type="Control" parent="." unique_id=228077135]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="world" type="Node2D" parent="." unique_id=229086658]
+
+[node name="BG" type="Node2D" parent="world" unique_id=2085584896]
+position = Vector2(9, -17)
+
+[node name="Parallax2D" type="Parallax2D" parent="world/BG" unique_id=326906835]
+scroll_scale = Vector2(0.1, 0.1)
+repeat_size = Vector2(1281.6, 1)
+
+[node name="1" type="Sprite2D" parent="world/BG/Parallax2D" unique_id=1169613325]
+position = Vector2(570.00006, 211.49998)
+scale = Vector2(2.2248263, 4.1574073)
+texture = ExtResource("1_5s5uv")
+
+[node name="Parallax2D2" type="Parallax2D" parent="world/BG" unique_id=1440561512]
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(1281.6, 0)
+
+[node name="2" type="Sprite2D" parent="world/BG/Parallax2D2" unique_id=187568749]
+position = Vector2(570.00006, 414.00006)
+scale = Vector2(2.2248263, 3.6851852)
+texture = ExtResource("3_y5x8j")
+
+[node name="Parallax2D3" type="Parallax2D" parent="world/BG" unique_id=2122125790]
+scroll_scale = Vector2(0.4, 0.4)
+repeat_size = Vector2(1281.6, 0)
+
+[node name="3" type="Sprite2D" parent="world/BG/Parallax2D3" unique_id=287579659]
+position = Vector2(570.00006, 328)
+scale = Vector2(2.2248263, 2.1975307)
+texture = ExtResource("4_p0sv3")
+
+[node name="Parallax2D4" type="Parallax2D" parent="world/BG" unique_id=873173702]
+scroll_scale = Vector2(0.6, 0.6)
+repeat_size = Vector2(1281.6, 0)
+
+[node name="4" type="Sprite2D" parent="world/BG/Parallax2D4" unique_id=1453681851]
+position = Vector2(570.00006, 328)
+scale = Vector2(2.2248263, 2.1975307)
+texture = ExtResource("5_82g61")
+
+[node name="Parallax2D5" type="Parallax2D" parent="world/BG" unique_id=246260964]
+scroll_scale = Vector2(0.8, 0.8)
+repeat_size = Vector2(1281.6, 0)
+
+[node name="5" type="Sprite2D" parent="world/BG/Parallax2D5" unique_id=1586751912]
+position = Vector2(570.00006, 328)
+scale = Vector2(2.2248263, 2.1975307)
+texture = ExtResource("6_u8t1u")
+
+[node name="Parallax2D6" type="Parallax2D" parent="world/BG" unique_id=819197301]
+repeat_size = Vector2(1281.6, 0)
+
+[node name="5" type="Sprite2D" parent="world/BG/Parallax2D6" unique_id=1900313529]
+position = Vector2(570.00006, 328)
+scale = Vector2(2.2248263, 2.1975307)
+texture = ExtResource("7_cql7i")
+
+[node name="floor" type="Sprite2D" parent="world/BG" unique_id=162447274]
+texture_filter = 1
+texture_repeat = 2
+position = Vector2(224.00002, 1989)
+scale = Vector2(253.5, 85.18749)
+texture = ExtResource("8_p0sv3")
+
+[node name="Elements" type="Node2D" parent="world" unique_id=100041224]
+visible = false
+
+[node name="Icon" type="Sprite2D" parent="world/Elements" unique_id=1819235362]
+position = Vector2(154, 101)
+texture = ExtResource("4_rwauq")
+
+[node name="Icon2" type="Sprite2D" parent="world/Elements" unique_id=848692168]
+position = Vector2(1178, -142)
+texture = ExtResource("4_rwauq")
+
+[node name="Electrics" type="Node2D" parent="world" unique_id=706016677]
+
+[node name="Camera2D" type="Camera2D" parent="world" unique_id=1846126987]
+limit_left = -3000
+limit_top = -3000
+limit_right = 3000
+limit_bottom = 624
+limit_smoothed = true
+script = ExtResource("3_rwauq")
+min_zoom = 0.8
+max_zoom = 2.0
