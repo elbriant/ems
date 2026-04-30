@@ -32,7 +32,7 @@ scroll_scale = Vector2(0.1, 0.1)
 repeat_size = Vector2(1281.6, 1)
 
 [node name="1" type="Sprite2D" parent="world/BG/Parallax2D" unique_id=1169613325]
-position = Vector2(570.00006, 211.49998)
+position = Vector2(570, 214)
 scale = Vector2(2.2248263, 4.1574073)
 texture = ExtResource("1_5s5uv")
 
@@ -41,7 +41,7 @@ scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(1281.6, 0)
 
 [node name="2" type="Sprite2D" parent="world/BG/Parallax2D2" unique_id=187568749]
-position = Vector2(570.00006, 414.00006)
+position = Vector2(570.00006, 339)
 scale = Vector2(2.2248263, 3.6851852)
 texture = ExtResource("3_y5x8j")
 
@@ -80,15 +80,18 @@ position = Vector2(570.00006, 328)
 scale = Vector2(2.2248263, 2.1975307)
 texture = ExtResource("7_cql7i")
 
-[node name="floor" type="Sprite2D" parent="world/BG" unique_id=162447274]
+[node name="floor" type="TextureRect" parent="world/BG" unique_id=237406542]
 texture_filter = 1
 texture_repeat = 2
-position = Vector2(224.00002, 1989)
-scale = Vector2(253.5, 85.18749)
+offset_left = -3861.0
+offset_top = 569.0
+offset_right = 139.0
+offset_bottom = 969.0
+scale = Vector2(1.972, 1)
 texture = ExtResource("8_p0sv3")
+stretch_mode = 1
 
 [node name="Elements" type="Node2D" parent="world" unique_id=100041224]
-visible = false
 
 [node name="Icon" type="Sprite2D" parent="world/Elements" unique_id=1819235362]
 position = Vector2(154, 101)
@@ -101,6 +104,7 @@ texture = ExtResource("4_rwauq")
 [node name="Electrics" type="Node2D" parent="world" unique_id=706016677]
 
 [node name="Camera2D" type="Camera2D" parent="world" unique_id=1846126987]
+position = Vector2(-37, -6)
 limit_left = -3000
 limit_top = -3000
 limit_right = 3000
