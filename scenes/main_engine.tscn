@@ -5,11 +5,12 @@
 [ext_resource type="Script" uid="uid://mqyhvmqavfd7" path="res://scripts/camera.gd" id="3_rwauq"]
 [ext_resource type="Texture2D" uid="uid://2jrdaahhr5ry" path="res://assets/parallax/2.png" id="3_y5x8j"]
 [ext_resource type="Texture2D" uid="uid://1pnbab8eqyjw" path="res://assets/parallax/3.png" id="4_p0sv3"]
-[ext_resource type="Texture2D" uid="uid://d37gpn1py34m4" path="res://icon.svg" id="4_rwauq"]
 [ext_resource type="Texture2D" uid="uid://dadprfqt1rqbl" path="res://assets/parallax/4.png" id="5_82g61"]
 [ext_resource type="Texture2D" uid="uid://bww8qhutgjo24" path="res://assets/parallax/5.png" id="6_u8t1u"]
 [ext_resource type="Texture2D" uid="uid://cjyhy7of3ynry" path="res://assets/parallax/6.png" id="7_cql7i"]
+[ext_resource type="Texture2D" uid="uid://dcn7cpd251t4p" path="res://rawassets/seamless patterns/16x16px/separate/seamless_pattern_16x16px_SpriteSheet_ 63.png" id="8_82g61"]
 [ext_resource type="Texture2D" uid="uid://binstbuf18i3v" path="res://assets/floor.png" id="8_p0sv3"]
+[ext_resource type="Texture2D" uid="uid://chg5lcorbqsuw" path="res://rawassets/seamless patterns/16x16px/separate/seamless_pattern_16x16px_SpriteSheet_ 82.png" id="9_u8t1u"]
 
 [node name="mainEngine" type="Node" unique_id=280952739]
 script = ExtResource("1_smoar")
@@ -80,26 +81,79 @@ position = Vector2(570.00006, 328)
 scale = Vector2(2.2248263, 2.1975307)
 texture = ExtResource("7_cql7i")
 
-[node name="floor" type="TextureRect" parent="world/BG" unique_id=237406542]
+[node name="Elements" type="Node2D" parent="world" unique_id=100041224]
+
+[node name="TextureRect" type="TextureRect" parent="world/Elements" unique_id=1437911290]
+offset_left = -3.0
+offset_top = 327.0
+offset_right = 153.0
+offset_bottom = 554.0
+texture = ExtResource("8_82g61")
+stretch_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="world/Elements/TextureRect" unique_id=744793907]
+layout_mode = 0
+offset_left = 326.0
+offset_top = 1.0
+offset_right = 555.0
+offset_bottom = 240.0
+texture = ExtResource("8_82g61")
+stretch_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="world/Elements/TextureRect/TextureRect" unique_id=359805179]
+layout_mode = 0
+offset_left = 348.0
+offset_top = -1.0
+offset_right = 577.0
+offset_bottom = 238.0
+texture = ExtResource("8_82g61")
+stretch_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="world/Elements/TextureRect/TextureRect/TextureRect" unique_id=564014949]
+layout_mode = 0
+offset_left = 371.0
+offset_top = 1.0
+offset_right = 600.0
+offset_bottom = 240.0
+texture = ExtResource("8_82g61")
+stretch_mode = 1
+
+[node name="TextureRect" type="TextureRect" parent="world/Elements/TextureRect/TextureRect/TextureRect/TextureRect" unique_id=203987705]
+layout_mode = 0
+offset_left = 385.0
+offset_top = -1.0
+offset_right = 614.0
+offset_bottom = 238.0
+texture = ExtResource("8_82g61")
+stretch_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="world/Elements" unique_id=693565840]
+offset_left = -4.0
+offset_top = 353.0
+offset_right = 25.0
+offset_bottom = 554.0
+texture = ExtResource("9_u8t1u")
+stretch_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="world/Elements/TextureRect2" unique_id=132782052]
+layout_mode = 0
+offset_left = 129.0
+offset_top = -1.0
+offset_right = 157.0
+offset_bottom = 200.0
+texture = ExtResource("9_u8t1u")
+stretch_mode = 1
+
+[node name="floor" type="TextureRect" parent="world" unique_id=237406542]
 texture_filter = 1
 texture_repeat = 2
-offset_left = -3861.0
-offset_top = 569.0
-offset_right = 139.0
-offset_bottom = 969.0
+offset_left = -3852.0
+offset_top = 552.0
+offset_right = 148.0
+offset_bottom = 952.0
 scale = Vector2(1.972, 1)
 texture = ExtResource("8_p0sv3")
 stretch_mode = 1
-
-[node name="Elements" type="Node2D" parent="world" unique_id=100041224]
-
-[node name="Icon" type="Sprite2D" parent="world/Elements" unique_id=1819235362]
-position = Vector2(154, 101)
-texture = ExtResource("4_rwauq")
-
-[node name="Icon2" type="Sprite2D" parent="world/Elements" unique_id=848692168]
-position = Vector2(1178, -142)
-texture = ExtResource("4_rwauq")
 
 [node name="Electrics" type="Node2D" parent="world" unique_id=706016677]
 
