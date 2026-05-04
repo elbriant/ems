@@ -11,7 +11,6 @@
 [ext_resource type="PackedScene" uid="uid://c3scfbnstvrvm" path="res://scenes/electric/common_cable.tscn" id="8_y5x8j"]
 [ext_resource type="Script" uid="uid://ckde4mdtmgg5b" path="res://scripts/electric/electrical_split_phase_panel.gd" id="9_82g61"]
 [ext_resource type="PackedScene" uid="uid://dlvlr1461f452" path="res://scenes/electric/bulb.tscn" id="10_u8t1u"]
-[ext_resource type="PackedScene" uid="uid://cej56u4veatyw" path="res://scenes/electric/common_device.tscn" id="11_u8t1u"]
 
 [node name="mainEngine" type="Node" unique_id=280952739]
 script = ExtResource("1_smoar")
@@ -51,9 +50,8 @@ offset_right = -10.0
 offset_bottom = -14.0
 grow_horizontal = 0
 grow_vertical = 0
-max_value = 380.0
-step = 0.1
-value = 220.0
+max_value = 220.0
+value = 110.0
 
 [node name="Label" type="Label" parent="CanvasLayer/UI/Panel" unique_id=1520650550]
 layout_mode = 1
@@ -92,11 +90,6 @@ text = "Reiniciar SIM"
 layout_mode = 2
 toggle_mode = true
 text = "Ver detalles"
-
-[node name="toggle_all_devices" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer" unique_id=1095669957]
-layout_mode = 2
-toggle_mode = true
-text = "Activar/Desactivar todos"
 
 [node name="world" type="Node2D" parent="." unique_id=229086658]
 
@@ -145,8 +138,7 @@ position = Vector2(44, -10)
 connected_components = [NodePath("../CableExterno1")]
 
 [node name="CableExterno1" parent="world/Electrics" unique_id=1395353587 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(44, 161.00002)
-wire_gauge = 2
+position = Vector2(43, 164.00002)
 connected_components = [NodePath("../CableExterno2")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExterno1" index="0" unique_id=944044291]
@@ -156,8 +148,8 @@ points = PackedVector2Array(0, 0, 0, 391)
 width = 10.0
 
 [node name="CableExterno2" parent="world/Electrics" unique_id=1329888327 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-359, 361)
-connected_components = [NodePath("../CableExterno3"), NodePath("../CableExterno4")]
+position = Vector2(41, 364)
+connected_components = [NodePath("../CableExterno3")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExterno2" index="0" unique_id=944044291]
 position = Vector2(-2086.5835, 584)
@@ -166,8 +158,7 @@ points = PackedVector2Array(0, 0, 216.92406, -1)
 width = 10.0
 
 [node name="CableExterno3" parent="world/Electrics" unique_id=417744749 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-1559, 260.00003)
-wire_gauge = 2
+position = Vector2(-1565, 358.00003)
 connected_components = [NodePath("../casa1_cableado/ElectricalSplitPhasePanel")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExterno3" index="0" unique_id=944044291]
@@ -178,30 +169,27 @@ points = PackedVector2Array(135.04346, -90.22272, 123.79834, 99.467926)
 [node name="casa1_cableado" type="Node2D" parent="world/Electrics" unique_id=1896064299]
 position = Vector2(-1004, 51)
 
-[node name="ElectricalSplitPhasePanel" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=622510636 node_paths=PackedStringArray("phase_1_components", "phase_2_components", "biphasic_components")]
-position = Vector2(-553, 82)
+[node name="ElectricalSplitPhasePanel" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=622510636 node_paths=PackedStringArray("phase_1_components")]
+position = Vector2(-554, 101)
 script = ExtResource("9_82g61")
-phase_1_components = [NodePath("../Fase1Cable110v")]
-phase_2_components = [NodePath("../Fase2Cable110v")]
-biphasic_components = [NodePath("../Cable220v")]
+phase_1_components = [NodePath("../luminaria/Cable")]
 metadata/_custom_type_script = "uid://ckde4mdtmgg5b"
 
 [node name="Marker2D" type="Marker2D" parent="world/Electrics/casa1_cableado/ElectricalSplitPhasePanel" unique_id=524101237]
 gizmo_extents = 100.0
 
-[node name="Fase1Cable110v" parent="world/Electrics/casa1_cableado" unique_id=2014134022 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-543, -19)
-connected_components = [NodePath("../luminaria/Cable2")]
+[node name="luminaria" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=2005332219]
 
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/Fase1Cable110v" index="0" unique_id=944044291]
+[node name="Cable" parent="world/Electrics/casa1_cableado/luminaria" unique_id=2014134022 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-556, 52)
+connected_components = [NodePath("../Cable2")]
+
+[node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable" index="0" unique_id=944044291]
 position = Vector2(-2079, 318)
 points = PackedVector2Array(0, 0, 54, -58)
 
-[node name="luminaria" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=2005332219]
-
 [node name="Cable2" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1497128961 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(19, -13)
-length_meters = 15.0
+position = Vector2(-504, 0)
 connected_components = [NodePath("../Bombillo5"), NodePath("../Bombillo6"), NodePath("../Bombillo7"), NodePath("../Bombillo8"), NodePath("../Bombillo9"), NodePath("../Cable3")]
 
 [node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable2" index="0" unique_id=944044291]
@@ -224,7 +212,7 @@ position = Vector2(355, 23)
 position = Vector2(516, 23)
 
 [node name="Cable3" parent="world/Electrics/casa1_cableado/luminaria" unique_id=599562485 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-172, -154)
+position = Vector2(-172, -11)
 connected_components = [NodePath("../Cable4")]
 
 [node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable3" index="0" unique_id=944044291]
@@ -232,7 +220,7 @@ position = Vector2(-1699, 260)
 points = PackedVector2Array(0, 0, 1, -294)
 
 [node name="Cable4" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1416308810 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(75, -304)
+position = Vector2(-174, -307)
 connected_components = [NodePath("../Bombillo"), NodePath("../Bombillo2"), NodePath("../Bombillo3"), NodePath("../Bombillo4")]
 
 [node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable4" index="0" unique_id=944044291]
@@ -251,100 +239,14 @@ position = Vector2(224, -265)
 [node name="Bombillo4" parent="world/Electrics/casa1_cableado/luminaria" unique_id=767505581 instance=ExtResource("10_u8t1u")]
 position = Vector2(450, -264)
 
-[node name="Cable220v" parent="world/Electrics/casa1_cableado" unique_id=1095784023 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-100, 157)
-connected_components = [NodePath("../Lavadora")]
-
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/Cable220v" index="0" unique_id=944044291]
-position = Vector2(-2114, 305)
-points = PackedVector2Array(64, 50, 601, 142)
-
-[node name="Lavadora" parent="world/Electrics/casa1_cableado" unique_id=1895436303 instance=ExtResource("11_u8t1u")]
-position = Vector2(40, 183)
-nominal_voltage = 220.0
-nominal_power = 1550.0
-has_switch = true
-
-[node name="Sprite2D" parent="world/Electrics/casa1_cableado/Lavadora" index="0" unique_id=2041175647]
-position = Vector2(1, -3.500001)
-scale = Vector2(0.96875, 1.4218751)
-
-[node name="Fase2Cable110v" parent="world/Electrics/casa1_cableado" unique_id=334893330 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-387, 203)
-connected_components = [NodePath("../Dispositivo")]
-
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/Fase2Cable110v" index="0" unique_id=944044291]
-points = PackedVector2Array(-2051, 397, -1879, 547, -1196, 548, -1208, 496)
-
-[node name="Dispositivo" parent="world/Electrics/casa1_cableado" unique_id=2060779347 instance=ExtResource("11_u8t1u")]
-position = Vector2(328, 184)
-nominal_power = 350.0
-has_switch = true
-
-[node name="Sprite2D" parent="world/Electrics/casa1_cableado/Dispositivo" index="0" unique_id=2041175647]
-position = Vector2(-3.5, -16.00001)
-scale = Vector2(0.890625, 1.7499998)
-
-[node name="CableExterno4" parent="world/Electrics" unique_id=1525873929 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(268, 252)
-connected_components = [NodePath("../casa2_cableado/ElectricalSplitPhasePanel")]
-
-[node name="Cable_comun" parent="world/Electrics/CableExterno4" index="0" unique_id=944044291]
-position = Vector2(7, -1)
-points = PackedVector2Array(-228, 583, -227, 395)
-
 [node name="casa2_cableado" type="Node2D" parent="world/Electrics" unique_id=1089561009]
-position = Vector2(933, 28)
-
-[node name="ElectricalSplitPhasePanel" type="Node2D" parent="world/Electrics/casa2_cableado" unique_id=158089751 node_paths=PackedStringArray("phase_1_components")]
-position = Vector2(-632, 103)
-script = ExtResource("9_82g61")
-phase_1_components = [NodePath("../luminaria/cableluminaria")]
-metadata/_custom_type_script = "uid://ckde4mdtmgg5b"
-
-[node name="Marker2D" type="Marker2D" parent="world/Electrics/casa2_cableado/ElectricalSplitPhasePanel" unique_id=1076401178]
-gizmo_extents = 100.0
-
-[node name="luminaria" type="Node2D" parent="world/Electrics/casa2_cableado" unique_id=1527637642]
-
-[node name="cableluminaria" parent="world/Electrics/casa2_cableado/luminaria" unique_id=656591952 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-613, 47)
-connected_components = [NodePath("../Bombillo"), NodePath("../Bombillo2"), NodePath("../Bombillo3"), NodePath("../Bombillo4"), NodePath("../Bombillo5"), NodePath("../Bombillo6"), NodePath("../Bombillo7"), NodePath("../Bombillo8")]
-
-[node name="Cable_comun" parent="world/Electrics/casa2_cableado/luminaria/cableluminaria" index="0" unique_id=944044291]
-position = Vector2(-218, 346)
-points = PackedVector2Array(-3, -33, 68, -95, 1119, -99, 906, -100, 905, -386, 1080, -385, 243, -383)
-
-[node name="Bombillo" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1711391712 instance=ExtResource("10_u8t1u")]
-position = Vector2(-153, -260)
-
-[node name="Bombillo2" parent="world/Electrics/casa2_cableado/luminaria" unique_id=835995735 instance=ExtResource("10_u8t1u")]
-position = Vector2(-388, -256)
-
-[node name="Bombillo3" parent="world/Electrics/casa2_cableado/luminaria" unique_id=255068621 instance=ExtResource("10_u8t1u")]
-position = Vector2(385, -257)
-
-[node name="Bombillo4" parent="world/Electrics/casa2_cableado/luminaria" unique_id=6355413 instance=ExtResource("10_u8t1u")]
-position = Vector2(-387, 25)
-
-[node name="Bombillo5" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1221349045 instance=ExtResource("10_u8t1u")]
-position = Vector2(-167, 35)
-
-[node name="Bombillo6" parent="world/Electrics/casa2_cableado/luminaria" unique_id=209765642 instance=ExtResource("10_u8t1u")]
-position = Vector2(48, 27)
-
-[node name="Bombillo7" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1231984688 instance=ExtResource("10_u8t1u")]
-position = Vector2(284, 29)
-
-[node name="Bombillo8" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1948733128 instance=ExtResource("10_u8t1u")]
-position = Vector2(444, 25)
+position = Vector2(368, 251)
 
 [node name="world_border" type="ReferenceRect" parent="world" unique_id=1285442467]
 offset_left = -3981.0
 offset_top = -326.0
 offset_right = 4093.0
 offset_bottom = 654.0
-mouse_filter = 2
 border_color = Color(0.7189973, 0.6810747, 0, 1)
 border_width = 20.0
 editor_only = false
@@ -366,18 +268,11 @@ max_zoom = 2.0
 [connection signal="value_changed" from="CanvasLayer/UI/Panel/VSlider" to="." method="_on_v_slider_value_changed"]
 [connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/reset" to="." method="_on_reset_button_down"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/details" to="." method="_on_details_toggled"]
-[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/toggle_all_devices" to="." method="_on_toggle_all_devices_toggled"]
 
 [editable path="world/Electrics/CableExterno1"]
 [editable path="world/Electrics/CableExterno2"]
 [editable path="world/Electrics/CableExterno3"]
-[editable path="world/Electrics/casa1_cableado/Fase1Cable110v"]
+[editable path="world/Electrics/casa1_cableado/luminaria/Cable"]
 [editable path="world/Electrics/casa1_cableado/luminaria/Cable2"]
 [editable path="world/Electrics/casa1_cableado/luminaria/Cable3"]
 [editable path="world/Electrics/casa1_cableado/luminaria/Cable4"]
-[editable path="world/Electrics/casa1_cableado/Cable220v"]
-[editable path="world/Electrics/casa1_cableado/Lavadora"]
-[editable path="world/Electrics/casa1_cableado/Fase2Cable110v"]
-[editable path="world/Electrics/casa1_cableado/Dispositivo"]
-[editable path="world/Electrics/CableExterno4"]
-[editable path="world/Electrics/casa2_cableado/luminaria/cableluminaria"]

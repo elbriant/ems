@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctev5bsyhytbf"
-path="res://.godot/imported/floor.png-38406586736af2fe805d7b886727ee47.ctex"
+uid="uid://b2hp6ktem4lyi"
+path="res://.godot/imported/transformador.png-55134ede6cf6cd9cb1343af5854b3068.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/floor.png"
-dest_files=["res://.godot/imported/floor.png-38406586736af2fe805d7b886727ee47.ctex"]
+source_file="res://assets/transformador.png"
+dest_files=["res://.godot/imported/transformador.png-55134ede6cf6cd9cb1343af5854b3068.ctex"]
 
 [params]
 

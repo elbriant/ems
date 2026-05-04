@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctev5bsyhytbf"
-path="res://.godot/imported/floor.png-38406586736af2fe805d7b886727ee47.ctex"
+uid="uid://4psin0nnjsu1"
+path="res://.godot/imported/tablero.png-90d158e797385977ed915a5a45271600.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/floor.png"
-dest_files=["res://.godot/imported/floor.png-38406586736af2fe805d7b886727ee47.ctex"]
+source_file="res://assets/tablero.png"
+dest_files=["res://.godot/imported/tablero.png-90d158e797385977ed915a5a45271600.ctex"]
 
 [params]
 

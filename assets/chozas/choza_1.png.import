@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctev5bsyhytbf"
-path="res://.godot/imported/floor.png-38406586736af2fe805d7b886727ee47.ctex"
+uid="uid://begjdx320b0wu"
+path="res://.godot/imported/choza_1.png-02e7fc6b5ee4c17d8d7fd0032ad4d1ec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/floor.png"
-dest_files=["res://.godot/imported/floor.png-38406586736af2fe805d7b886727ee47.ctex"]
+source_file="res://assets/chozas/choza_1.png"
+dest_files=["res://.godot/imported/choza_1.png-02e7fc6b5ee4c17d8d7fd0032ad4d1ec.ctex"]
 
 [params]
 

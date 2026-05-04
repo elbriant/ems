@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://c3scfbnstvrvm"]
+
+[ext_resource type="Script" uid="uid://cejn17doxmlar" path="res://scripts/elements/cable.gd" id="1_u513i"]
+[ext_resource type="Gradient" uid="uid://b5m2vd3rpglyr" path="res://resources/cable_gradient.tres" id="2_j7pwj"]
+[ext_resource type="Script" uid="uid://dbpj64ascmwkt" path="res://scripts/electric/electrical_wire.gd" id="3_kwmp5"]
+
+[node name="Cable" type="Node2D" unique_id=1395353587]
+script = ExtResource("3_kwmp5")
+wire_gauge = 0
+metadata/_custom_type_script = "uid://dbpj64ascmwkt"
+
+[node name="Cable_comun" type="Line2D" parent="." unique_id=944044291 node_paths=PackedStringArray("electrical_wire")]
+top_level = true
+points = PackedVector2Array(0, 0, 200, 0)
+width = 5.0
+default_color = Color(0.9836106, 0.6677482, 0, 1)
+script = ExtResource("1_u513i")
+electrical_wire = NodePath("..")
+stress_gradient = ExtResource("2_j7pwj")
+metadata/_custom_type_script = "uid://cejn17doxmlar"

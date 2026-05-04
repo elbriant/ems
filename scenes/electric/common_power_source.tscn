@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://8x0kt7sdx03q"]
+
+[ext_resource type="Script" uid="uid://cgfh5t6bwupn1" path="res://scripts/electric/electrical_source.gd" id="1_a6ey0"]
+
+[node name="PowerSource" type="Node2D" unique_id=23655924]
+script = ExtResource("1_a6ey0")
+metadata/_custom_type_script = "uid://cgfh5t6bwupn1"
+
+[node name="Marker2D" type="Marker2D" parent="." unique_id=843704515]
+gizmo_extents = 100.0

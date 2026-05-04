@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cej56u4veatyw"]
+
+[ext_resource type="Script" uid="uid://dpcvyigv6kvrl" path="res://scripts/electric/electrical_consumer.gd" id="1_rino5"]
+
+[sub_resource type="Gradient" id="Gradient_rino5"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 1, 1, 0.36078432)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_yhvfr"]
+gradient = SubResource("Gradient_rino5")
+
+[node name="Dispositivo" type="Node2D" unique_id=1895436303 node_paths=PackedStringArray("visual_sprite")]
+script = ExtResource("1_rino5")
+visual_sprite = NodePath("Sprite2D")
+metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2041175647]
+texture_repeat = 2
+texture = SubResource("GradientTexture2D_yhvfr")
