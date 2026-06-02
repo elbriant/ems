@@ -7,11 +7,22 @@
 [ext_resource type="Script" uid="uid://mqyhvmqavfd7" path="res://scripts/camera.gd" id="3_rwauq"]
 [ext_resource type="Texture2D" uid="uid://ctev5bsyhytbf" path="res://assets/floor.png" id="5_xvnu0"]
 [ext_resource type="Texture2D" uid="uid://wknfp5cxhkd0" path="res://assets/chozas/choza_2.png" id="5_y5x8j"]
+[ext_resource type="Texture2D" uid="uid://b430j26ln48ee" path="res://assets/chozas/choza_3.png" id="6_nj3ym"]
+[ext_resource type="Texture2D" uid="uid://dlx5pgjqmnfl" path="res://assets/chozas/choza_4.png" id="7_8bnuv"]
 [ext_resource type="PackedScene" uid="uid://8x0kt7sdx03q" path="res://scenes/electric/common_power_source.tscn" id="8_p0sv3"]
 [ext_resource type="PackedScene" uid="uid://c3scfbnstvrvm" path="res://scenes/electric/common_cable.tscn" id="8_y5x8j"]
 [ext_resource type="Script" uid="uid://ckde4mdtmgg5b" path="res://scripts/electric/electrical_split_phase_panel.gd" id="9_82g61"]
 [ext_resource type="PackedScene" uid="uid://dlvlr1461f452" path="res://scenes/electric/bulb.tscn" id="10_u8t1u"]
 [ext_resource type="PackedScene" uid="uid://cej56u4veatyw" path="res://scenes/electric/common_device.tscn" id="11_u8t1u"]
+[ext_resource type="PackedScene" uid="uid://o4mkde2w7i5m" path="res://scenes/electric/common_panel.tscn" id="14_5rlws"]
+[ext_resource type="Texture2D" uid="uid://bdpsvdxxnf7kp" path="res://assets/lights/64x64 textures  (2).png" id="15_8bnuv"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_nj3ym"]
+cull_mode = 2
+polygon = PackedVector2Array(-965.8921, -403.259, 1049.6167, -406.40332, 1008.74023, -392.25388, 1008.74023, 99.83205, 1302.7344, 170.57924, 1305.8784, 623.3612, -871.5625, 613.9282, -890.42847, -269.62543, -1102.6702, -294.78, -884.1399, -299.49646, -888.85645, -393.82605)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_8bnuv"]
+polygon = PackedVector2Array(-851.6841, -336.6738, -338.6006, -337.2283, -330.73975, -214.59985, -294.58008, -220.88849, -310.6703, -340.41525, 536.1433, -342.99835, 518.22656, -231.89362, 537.0925, -227.17712, 563.8191, -334.08398, 971.0083, -337.2283, 969.4365, 98.2599, -854.3433, 105.7601, -854.3433, -350.33026, -854.3433, -350.33026, -855.99585, -401.5578, -879.13086, -401.5578, -883.35156, 278.33917, -854.3433, 280.92526, -845.0176, 156.66995, 434.9021, 154.85762, 436.47412, 277.48608, 467.91748, 274.3418, 467.91748, 158.00197, 710.0298, 156.4298, 721.03516, 602.9231, 758.7671, 602.9231, 757.1948, 158.00197, 950.0205, 151.66983, 956.6875, 600.01263, 1001.41595, 596.553, 998.111, -398.2528, -855.99585, -401.5578)
 
 [node name="mainEngine" type="Node" unique_id=280952739]
 script = ExtResource("1_smoar")
@@ -51,8 +62,9 @@ offset_right = -10.0
 offset_bottom = -14.0
 grow_horizontal = 0
 grow_vertical = 0
-max_value = 380.0
-step = 0.1
+min_value = 110.0
+max_value = 280.0
+step = 10.0
 value = 220.0
 
 [node name="Label" type="Label" parent="CanvasLayer/UI/Panel" unique_id=1520650550]
@@ -101,6 +113,7 @@ text = "Activar/Desactivar todos"
 [node name="world" type="Node2D" parent="." unique_id=229086658]
 
 [node name="BG" type="Node2D" parent="world" unique_id=2085584896]
+metadata/_edit_lock_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="world/BG" unique_id=1103387863]
 position = Vector2(90, 538.5312)
@@ -109,21 +122,72 @@ texture = ExtResource("2_xvnu0")
 metadata/_edit_lock_ = true
 
 [node name="decorations" type="Node2D" parent="world" unique_id=100041224]
+metadata/_edit_lock_ = true
 
 [node name="Transformador" type="Sprite2D" parent="world/decorations" unique_id=22598953]
 position = Vector2(-559, 87.25)
 scale = Vector2(0.4880435, 0.6188151)
 texture = ExtResource("3_jpnxc")
+metadata/_edit_lock_ = true
 
 [node name="Choza1" type="Sprite2D" parent="world/decorations" unique_id=689150390]
 position = Vector2(357, 173)
 scale = Vector2(0.60514313, 0.60514325)
 texture = ExtResource("3_p0sv3")
+metadata/_edit_lock_ = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="world/decorations/Choza1" unique_id=1222709563]
+occluder = SubResource("OccluderPolygon2D_nj3ym")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="world/decorations/Choza1" unique_id=524777358]
+occluder = SubResource("OccluderPolygon2D_8bnuv")
 
 [node name="Choza2" type="Sprite2D" parent="world/decorations" unique_id=2090404312]
 position = Vector2(-1504, 180)
 scale = Vector2(0.6005858, 0.60058594)
 texture = ExtResource("5_y5x8j")
+metadata/_edit_lock_ = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="world/decorations/Choza2" unique_id=1883547958]
+occluder = SubResource("OccluderPolygon2D_nj3ym")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="world/decorations/Choza2" unique_id=232519585]
+occluder = SubResource("OccluderPolygon2D_8bnuv")
+
+[node name="Choza3" type="Sprite2D" parent="world/decorations" unique_id=1929520496]
+position = Vector2(-3132.0002, 180.00002)
+scale = Vector2(1.5665467, 1.5665468)
+texture = ExtResource("6_nj3ym")
+metadata/_edit_lock_ = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="world/decorations/Choza3" unique_id=2053031267]
+scale = Vector2(0.378, 0.378)
+occluder = SubResource("OccluderPolygon2D_nj3ym")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="world/decorations/Choza3" unique_id=1670138695]
+scale = Vector2(0.383, 0.383)
+occluder = SubResource("OccluderPolygon2D_8bnuv")
+
+[node name="Choza4" type="Sprite2D" parent="world/decorations" unique_id=818193344]
+position = Vector2(2232.3728, 156.50005)
+scale = Vector2(0.6360677, 0.63606775)
+texture = ExtResource("7_8bnuv")
+metadata/_edit_lock_ = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="world/decorations/Choza4" unique_id=1210273722]
+occluder = SubResource("OccluderPolygon2D_nj3ym")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="world/decorations/Choza4" unique_id=1152954579]
+occluder = SubResource("OccluderPolygon2D_8bnuv")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="world/decorations" unique_id=650109183]
+color = Color(0.616748, 0.6167481, 0.6167478, 1)
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="world/decorations" unique_id=1684193029]
+position = Vector2(0, -358)
+rotation = 0.37896413
+energy = 0.2
+shadow_enabled = true
 
 [node name="floor" type="TextureRect" parent="world" unique_id=237406542]
 texture_filter = 1
@@ -142,38 +206,18 @@ position = Vector2(-521, 222)
 
 [node name="PowerSource" parent="world/Electrics" unique_id=23655924 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_p0sv3")]
 position = Vector2(44, -10)
-connected_components = [NodePath("../CableExterno1")]
+connected_components = [NodePath("../CableExternoCasa1"), NodePath("../CableExternoCasa2"), NodePath("../CableExternoCasa3"), NodePath("../CableExternoCasa4")]
 
-[node name="CableExterno1" parent="world/Electrics" unique_id=1395353587 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(44, 161.00002)
-wire_gauge = 2
-connected_components = [NodePath("../CableExterno2")]
-
-[node name="Cable_comun" parent="world/Electrics/CableExterno1" index="0" unique_id=944044291]
-position = Vector2(-478, 217.41606)
-scale = Vector2(1, 0.94160587)
-points = PackedVector2Array(0, 0, 0, 391)
-width = 10.0
-
-[node name="CableExterno2" parent="world/Electrics" unique_id=1329888327 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-359, 361)
-connected_components = [NodePath("../CableExterno3"), NodePath("../CableExterno4")]
-
-[node name="Cable_comun" parent="world/Electrics/CableExterno2" index="0" unique_id=944044291]
-position = Vector2(-2086.5835, 584)
-scale = Vector2(8.641658, 1)
-points = PackedVector2Array(0, 0, 216.92406, -1)
-width = 10.0
-
-[node name="CableExterno3" parent="world/Electrics" unique_id=417744749 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+[node name="CableExternoCasa1" parent="world/Electrics" unique_id=417744749 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-1559, 260.00003)
 wire_gauge = 2
 connected_components = [NodePath("../casa1_cableado/ElectricalSplitPhasePanel")]
 
-[node name="Cable_comun" parent="world/Electrics/CableExterno3" index="0" unique_id=944044291]
+[node name="Cable_comun" parent="world/Electrics/CableExternoCasa1" index="0" unique_id=944044291]
 position = Vector2(-2210.9998, 494.99997)
 rotation = -0.04342405
-points = PackedVector2Array(135.04346, -90.22272, 123.79834, 99.467926)
+points = PackedVector2Array(135.04346, -90.22272, 126.403564, 62.546234, 1642.7988, 132.43945, 1714.5054, -181.74391)
+default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 
 [node name="casa1_cableado" type="Node2D" parent="world/Electrics" unique_id=1896064299]
 position = Vector2(-1004, 51)
@@ -209,19 +253,19 @@ position = Vector2(-2027, 261)
 points = PackedVector2Array(0, 0, 1022, -4)
 
 [node name="Bombillo5" parent="world/Electrics/casa1_cableado/luminaria" unique_id=93010359 instance=ExtResource("10_u8t1u")]
-position = Vector2(-319, 15)
+position = Vector2(-309, 15)
 
 [node name="Bombillo6" parent="world/Electrics/casa1_cableado/luminaria" unique_id=565207588 instance=ExtResource("10_u8t1u")]
-position = Vector2(-89, 22)
+position = Vector2(-87, 23)
 
 [node name="Bombillo7" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1499827826 instance=ExtResource("10_u8t1u")]
-position = Vector2(121, 16)
+position = Vector2(127, 17)
 
 [node name="Bombillo8" parent="world/Electrics/casa1_cableado/luminaria" unique_id=672971560 instance=ExtResource("10_u8t1u")]
-position = Vector2(355, 23)
+position = Vector2(358, 16)
 
 [node name="Bombillo9" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1828326260 instance=ExtResource("10_u8t1u")]
-position = Vector2(516, 23)
+position = Vector2(517, 15)
 
 [node name="Cable3" parent="world/Electrics/casa1_cableado/luminaria" unique_id=599562485 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-172, -154)
@@ -240,16 +284,16 @@ position = Vector2(-1835, -43)
 points = PackedVector2Array(4, 11, 774, 11)
 
 [node name="Bombillo" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1553602894 instance=ExtResource("10_u8t1u")]
-position = Vector2(-311, -258)
+position = Vector2(-305, -267)
 
 [node name="Bombillo2" parent="world/Electrics/casa1_cableado/luminaria" unique_id=441492304 instance=ExtResource("10_u8t1u")]
-position = Vector2(-46, -277)
+position = Vector2(-30, -267)
 
-[node name="Bombillo3" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1763788490 instance=ExtResource("10_u8t1u")]
-position = Vector2(224, -265)
+[node name="Bombillo3" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1333774987 instance=ExtResource("10_u8t1u")]
+position = Vector2(226, -268)
 
-[node name="Bombillo4" parent="world/Electrics/casa1_cableado/luminaria" unique_id=767505581 instance=ExtResource("10_u8t1u")]
-position = Vector2(450, -264)
+[node name="Bombillo4" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1626519750 instance=ExtResource("10_u8t1u")]
+position = Vector2(457, -266)
 
 [node name="Cable220v" parent="world/Electrics/casa1_cableado" unique_id=1095784023 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-100, 157)
@@ -285,25 +329,22 @@ has_switch = true
 position = Vector2(-3.5, -16.00001)
 scale = Vector2(0.890625, 1.7499998)
 
-[node name="CableExterno4" parent="world/Electrics" unique_id=1525873929 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(268, 252)
+[node name="CableExternoCasa2" parent="world/Electrics" unique_id=1525873929 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(262, 245)
+wire_gauge = 2
 connected_components = [NodePath("../casa2_cableado/ElectricalSplitPhasePanel")]
 
-[node name="Cable_comun" parent="world/Electrics/CableExterno4" index="0" unique_id=944044291]
+[node name="Cable_comun" parent="world/Electrics/CableExternoCasa2" index="0" unique_id=944044291]
 position = Vector2(7, -1)
-points = PackedVector2Array(-228, 583, -227, 395)
+points = PackedVector2Array(-464, 233, -463, 557, -233, 554, -232, 394)
+default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 
 [node name="casa2_cableado" type="Node2D" parent="world/Electrics" unique_id=1089561009]
 position = Vector2(933, 28)
 
-[node name="ElectricalSplitPhasePanel" type="Node2D" parent="world/Electrics/casa2_cableado" unique_id=158089751 node_paths=PackedStringArray("phase_1_components")]
+[node name="ElectricalSplitPhasePanel" parent="world/Electrics/casa2_cableado" unique_id=451169415 node_paths=PackedStringArray("phase_1_components") instance=ExtResource("14_5rlws")]
 position = Vector2(-632, 103)
-script = ExtResource("9_82g61")
 phase_1_components = [NodePath("../luminaria/cableluminaria")]
-metadata/_custom_type_script = "uid://ckde4mdtmgg5b"
-
-[node name="Marker2D" type="Marker2D" parent="world/Electrics/casa2_cableado/ElectricalSplitPhasePanel" unique_id=1076401178]
-gizmo_extents = 100.0
 
 [node name="luminaria" type="Node2D" parent="world/Electrics/casa2_cableado" unique_id=1527637642]
 
@@ -316,28 +357,314 @@ position = Vector2(-218, 346)
 points = PackedVector2Array(-3, -33, 68, -95, 1119, -99, 906, -100, 905, -386, 1080, -385, 243, -383)
 
 [node name="Bombillo" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1711391712 instance=ExtResource("10_u8t1u")]
-position = Vector2(-153, -260)
+position = Vector2(-163, -244)
 
 [node name="Bombillo2" parent="world/Electrics/casa2_cableado/luminaria" unique_id=835995735 instance=ExtResource("10_u8t1u")]
-position = Vector2(-388, -256)
+position = Vector2(-382, -252)
 
 [node name="Bombillo3" parent="world/Electrics/casa2_cableado/luminaria" unique_id=255068621 instance=ExtResource("10_u8t1u")]
-position = Vector2(385, -257)
+position = Vector2(383, -251)
 
 [node name="Bombillo4" parent="world/Electrics/casa2_cableado/luminaria" unique_id=6355413 instance=ExtResource("10_u8t1u")]
-position = Vector2(-387, 25)
+position = Vector2(-388, 33)
 
 [node name="Bombillo5" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1221349045 instance=ExtResource("10_u8t1u")]
-position = Vector2(-167, 35)
+position = Vector2(-164, 39)
 
 [node name="Bombillo6" parent="world/Electrics/casa2_cableado/luminaria" unique_id=209765642 instance=ExtResource("10_u8t1u")]
-position = Vector2(48, 27)
+position = Vector2(52, 34)
 
 [node name="Bombillo7" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1231984688 instance=ExtResource("10_u8t1u")]
-position = Vector2(284, 29)
+position = Vector2(284, 32)
 
 [node name="Bombillo8" parent="world/Electrics/casa2_cableado/luminaria" unique_id=1948733128 instance=ExtResource("10_u8t1u")]
-position = Vector2(444, 25)
+position = Vector2(443, 32)
+
+[node name="CableExternoCasa3" parent="world/Electrics" unique_id=1123177649 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-3186, 240)
+wire_gauge = 2
+connected_components = [NodePath("../casa3_cableado/panel_casa3")]
+
+[node name="Cable_comun" parent="world/Electrics/CableExternoCasa3" index="0" unique_id=944044291]
+position = Vector2(7, -1)
+points = PackedVector2Array(-3715, 397, -3718, 568, -547, 573, -499, 238)
+default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
+
+[node name="casa3_cableado" type="Node2D" parent="world/Electrics" unique_id=892315248]
+
+[node name="panel_casa3" parent="world/Electrics/casa3_cableado" unique_id=92862241 node_paths=PackedStringArray("phase_1_components", "phase_2_components", "biphasic_components") instance=ExtResource("14_5rlws")]
+position = Vector2(-3184, 133)
+phase_1_components = [NodePath("../luminaria/casa3_luminaria"), NodePath("../fase2_electronicos/Fase2")]
+phase_2_components = [NodePath("../fase2_electronicos/Fase2")]
+biphasic_components = [NodePath("../cable_220v")]
+
+[node name="luminaria" type="Node2D" parent="world/Electrics/casa3_cableado" unique_id=860098181]
+
+[node name="casa3_luminaria" parent="world/Electrics/casa3_cableado/luminaria" unique_id=2060656062 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-3121, 37)
+connected_components = [NodePath("../Bombillo"), NodePath("../Bombillo2"), NodePath("../Bombillo3"), NodePath("../Bombillo4"), NodePath("../Bombillo5"), NodePath("../Bombillo6"), NodePath("../ventilador_techo"), NodePath("../ventilador_techo2")]
+
+[node name="Cable_comun" parent="world/Electrics/casa3_cableado/luminaria/casa3_luminaria" index="0" unique_id=944044291]
+points = PackedVector2Array(-3705, 324, -3704, 278, -3657, 276, -3641, 250, -2566, 250, -2815, 250, -2816, -24, -2706, -23, -3463, -21)
+
+[node name="Bombillo" parent="world/Electrics/casa3_cableado/luminaria" unique_id=1689941075 instance=ExtResource("10_u8t1u")]
+position = Vector2(-2945, 68)
+
+[node name="Bombillo2" parent="world/Electrics/casa3_cableado/luminaria" unique_id=42203178 instance=ExtResource("10_u8t1u")]
+position = Vector2(-2514, 70)
+
+[node name="Bombillo3" parent="world/Electrics/casa3_cableado/luminaria" unique_id=1482376931 instance=ExtResource("10_u8t1u")]
+position = Vector2(-2286, 68)
+
+[node name="Bombillo4" parent="world/Electrics/casa3_cableado/luminaria" unique_id=662350953 instance=ExtResource("10_u8t1u")]
+position = Vector2(-2130, 69)
+
+[node name="Bombillo5" parent="world/Electrics/casa3_cableado/luminaria" unique_id=1390401499 instance=ExtResource("10_u8t1u")]
+position = Vector2(-2189, -210)
+
+[node name="Bombillo6" parent="world/Electrics/casa3_cableado/luminaria" unique_id=396214517 instance=ExtResource("10_u8t1u")]
+position = Vector2(-2724, -205)
+
+[node name="ventilador_techo" parent="world/Electrics/casa3_cableado/luminaria" unique_id=936998720 node_paths=PackedStringArray("visual_light") instance=ExtResource("11_u8t1u")]
+position = Vector2(-2942, -186)
+nominal_power = 50.0
+has_switch = true
+visual_light = NodePath("PointLight2D")
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/luminaria/ventilador_techo" index="0" unique_id=2041175647]
+position = Vector2(1.9999313, -4.999998)
+scale = Vector2(1.7187514, 0.59374994)
+
+[node name="PointLight2D" type="PointLight2D" parent="world/Electrics/casa3_cableado/luminaria/ventilador_techo" unique_id=1256138962]
+position = Vector2(4.0000896, 96.00001)
+rotation = 3.1415927
+scale = Vector2(6.738638, 2.9744315)
+energy = 0.5
+texture = ExtResource("15_8bnuv")
+
+[node name="ventilador_techo2" parent="world/Electrics/casa3_cableado/luminaria" unique_id=951924737 node_paths=PackedStringArray("visual_light") instance=ExtResource("11_u8t1u")]
+position = Vector2(-2480, -187)
+nominal_power = 50.0
+has_switch = true
+visual_light = NodePath("PointLight2D")
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/luminaria/ventilador_techo2" index="0" unique_id=2041175647]
+position = Vector2(1.9999313, -4.999998)
+scale = Vector2(1.7187514, 0.59374994)
+
+[node name="PointLight2D" type="PointLight2D" parent="world/Electrics/casa3_cableado/luminaria/ventilador_techo2" unique_id=1137159438]
+position = Vector2(4.0000896, 96.00001)
+rotation = 3.1415927
+scale = Vector2(6.738638, 2.9744315)
+energy = 0.5
+texture = ExtResource("15_8bnuv")
+
+[node name="fase2_electronicos" type="Node" parent="world/Electrics/casa3_cableado" unique_id=1671593280]
+
+[node name="Fase2" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=525603565 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-3564, 343)
+wire_gauge = 1
+connected_components = [NodePath("../pc"), NodePath("../ventilador"), NodePath("../microondas"), NodePath("../nevera"), NodePath("../ventilador_sala"), NodePath("../TV_sala")]
+
+[node name="Cable_comun" parent="world/Electrics/casa3_cableado/fase2_electronicos/Fase2" index="0" unique_id=944044291]
+points = PackedVector2Array(-3675, 355, -3549, 421, -2958, 422, -2992, 120, -3558, 134)
+default_color = Color(0.99767, 0.6077463, 0.69330853, 1)
+joint_mode = 2
+
+[node name="pc" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=2135046681 instance=ExtResource("11_u8t1u")]
+position = Vector2(-3565, 143)
+nominal_power = 400.0
+has_switch = true
+
+[node name="ventilador" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=1528478156 instance=ExtResource("11_u8t1u")]
+position = Vector2(-3498, 139)
+nominal_power = 60.0
+has_switch = true
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/fase2_electronicos/ventilador" index="0" unique_id=2041175647]
+position = Vector2(-3, -4)
+scale = Vector2(0.703125, 1)
+
+[node name="microondas" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=2045044960 instance=ExtResource("11_u8t1u")]
+position = Vector2(-2963, 400)
+nominal_power = 900.0
+has_switch = true
+is_switched_on = false
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/fase2_electronicos/microondas" index="0" unique_id=2041175647]
+position = Vector2(3.5000181, -7.500015)
+scale = Vector2(1.2031282, 0.8593745)
+
+[node name="nevera" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=944808700 instance=ExtResource("11_u8t1u")]
+position = Vector2(-3156, 417)
+nominal_power = 115.0
+has_switch = true
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/fase2_electronicos/nevera" index="0" unique_id=2041175647]
+position = Vector2(-0.9998263, -2)
+scale = Vector2(1.3125021, 2.59375)
+
+[node name="ventilador_sala" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=1993135338 instance=ExtResource("11_u8t1u")]
+position = Vector2(-3324, 416)
+nominal_power = 50.0
+has_switch = true
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/fase2_electronicos/ventilador_sala" index="0" unique_id=2041175647]
+position = Vector2(-1.5000148, 22.499987)
+scale = Vector2(0.9531245, 1.8281255)
+
+[node name="TV_sala" parent="world/Electrics/casa3_cableado/fase2_electronicos" unique_id=47272109 instance=ExtResource("11_u8t1u")]
+position = Vector2(-3417, 411)
+nominal_power = 130.0
+has_switch = true
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/fase2_electronicos/TV_sala" index="0" unique_id=2041175647]
+position = Vector2(1.9999542, 9.50001)
+scale = Vector2(1.4999969, 1.1093745)
+
+[node name="cable_220v" parent="world/Electrics/casa3_cableado" unique_id=1395353587 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-2536, 255)
+connected_components = [NodePath("../220v/Dispositivo")]
+
+[node name="Cable_comun" parent="world/Electrics/casa3_cableado/cable_220v" index="0" unique_id=944044291]
+points = PackedVector2Array(-3674, 378, -3554, 445, -2525, 450)
+default_color = Color(0.9681842, 0.30959326, 0.7836234, 1)
+
+[node name="220v" type="Node" parent="world/Electrics/casa3_cableado" unique_id=102068415]
+
+[node name="Dispositivo" parent="world/Electrics/casa3_cableado/220v" unique_id=206941707 instance=ExtResource("11_u8t1u")]
+position = Vector2(-2486, 452)
+nominal_voltage = 220.0
+has_switch = true
+is_switched_on = false
+
+[node name="Sprite2D" parent="world/Electrics/casa3_cableado/220v/Dispositivo" index="0" unique_id=2041175647]
+position = Vector2(0.9999294, -6.0000124)
+scale = Vector2(1.2499979, 1.5937496)
+
+[node name="CableExternoCasa4" parent="world/Electrics" unique_id=1838257775 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(2000, 237)
+wire_gauge = 2
+connected_components = [NodePath("../casa4_cableado/ElectricalSplitPhasePanel")]
+
+[node name="Cable_comun" parent="world/Electrics/CableExternoCasa4" index="0" unique_id=944044291]
+position = Vector2(7, -1)
+points = PackedVector2Array(1614, 385, 1613, 576, -477, 571, -477, 235)
+default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
+
+[node name="casa4_cableado" type="Node2D" parent="world/Electrics" unique_id=489820330]
+position = Vector2(2768, 20)
+
+[node name="ElectricalSplitPhasePanel" parent="world/Electrics/casa4_cableado" unique_id=17556888 node_paths=PackedStringArray("phase_1_components", "phase_2_components", "biphasic_components") instance=ExtResource("14_5rlws")]
+position = Vector2(-625, 101)
+phase_1_components = [NodePath("../luminaria/CableLuminaria")]
+phase_2_components = [NodePath("../Fase2")]
+biphasic_components = [NodePath("../Cable220v")]
+
+[node name="luminaria" type="Node" parent="world/Electrics/casa4_cableado" unique_id=1509067779]
+
+[node name="CableLuminaria" parent="world/Electrics/casa4_cableado/luminaria" unique_id=26543860 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(1710, 237)
+connected_components = [NodePath("../Bombillo"), NodePath("../Bombillo2"), NodePath("../Bombillo3"), NodePath("../Bombillo4"), NodePath("../Bombillo5"), NodePath("../Bombillo6"), NodePath("../Bombillo7"), NodePath("../Bombillo8"), NodePath("../Bombillo9")]
+
+[node name="Cable_comun" parent="world/Electrics/casa4_cableado/luminaria/CableLuminaria" index="0" unique_id=944044291]
+points = PackedVector2Array(1620, 304, 1629, 259, 1671, 257, 1696, 237, 2760, 241, 2579, 241, 2581, -71, 2696, -70, 1885, -68)
+
+[node name="Bombillo" parent="world/Electrics/casa4_cableado/luminaria" unique_id=2068848451 instance=ExtResource("10_u8t1u")]
+position = Vector2(1886, -28)
+
+[node name="Bombillo2" parent="world/Electrics/casa4_cableado/luminaria" unique_id=1737977417 instance=ExtResource("10_u8t1u")]
+position = Vector2(2178, -28)
+
+[node name="Bombillo3" parent="world/Electrics/casa4_cableado/luminaria" unique_id=552852666 instance=ExtResource("10_u8t1u")]
+position = Vector2(2450, -27)
+
+[node name="Bombillo4" parent="world/Electrics/casa4_cableado/luminaria" unique_id=1445090053 instance=ExtResource("10_u8t1u")]
+position = Vector2(2694, -28)
+
+[node name="Bombillo5" parent="world/Electrics/casa4_cableado/luminaria" unique_id=530069712 instance=ExtResource("10_u8t1u")]
+position = Vector2(2758, 273)
+
+[node name="Bombillo6" parent="world/Electrics/casa4_cableado/luminaria" unique_id=398089163 instance=ExtResource("10_u8t1u")]
+position = Vector2(2590, 271)
+
+[node name="Bombillo7" parent="world/Electrics/casa4_cableado/luminaria" unique_id=2001110762 instance=ExtResource("10_u8t1u")]
+position = Vector2(2346, 273)
+
+[node name="Bombillo8" parent="world/Electrics/casa4_cableado/luminaria" unique_id=796904130 instance=ExtResource("10_u8t1u")]
+position = Vector2(2118, 276)
+
+[node name="Bombillo9" parent="world/Electrics/casa4_cableado/luminaria" unique_id=2041320455 instance=ExtResource("10_u8t1u")]
+position = Vector2(1883, 272)
+
+[node name="Fase2" parent="world/Electrics/casa4_cableado" unique_id=1979777713 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-442, 138)
+wire_gauge = 1
+connected_components = [NodePath("../dispositivos/lampara_cama"), NodePath("../dispositivos/lampara"), NodePath("../dispositivos/microonda"), NodePath("../dispositivos/cafetera")]
+
+[node name="Cable_comun" parent="world/Electrics/casa4_cableado/Fase2" index="0" unique_id=944044291]
+points = PackedVector2Array(1657, 345, 2239, 395, 2436, 387, 2424, 276, 2784, 283, 2778, 136, 2393, 111, 1808, 130)
+default_color = Color(0.99767, 0.6077463, 0.69330853, 1)
+
+[node name="dispositivos" type="Node" parent="world/Electrics/casa4_cableado" unique_id=2099349280]
+
+[node name="lampara_cama" parent="world/Electrics/casa4_cableado/dispositivos" unique_id=1757254960 instance=ExtResource("11_u8t1u")]
+position = Vector2(1809, 132)
+nominal_power = 120.0
+has_switch = true
+
+[node name="Sprite2D" parent="world/Electrics/casa4_cableado/dispositivos/lampara_cama" index="0" unique_id=2041175647]
+position = Vector2(-0.5000267, -2.0000029)
+scale = Vector2(0.45312583, 0.59375006)
+
+[node name="lampara" parent="world/Electrics/casa4_cableado/dispositivos" unique_id=1289449828 instance=ExtResource("11_u8t1u")]
+position = Vector2(2388, 115)
+nominal_power = 50.0
+
+[node name="Sprite2D" parent="world/Electrics/casa4_cableado/dispositivos/lampara" index="0" unique_id=2041175647]
+position = Vector2(-3.0000803, -8.000006)
+scale = Vector2(0.71875, 0.84375006)
+
+[node name="microonda" parent="world/Electrics/casa4_cableado/dispositivos" unique_id=307306424 instance=ExtResource("11_u8t1u")]
+position = Vector2(2442, 401)
+nominal_power = 900.0
+has_switch = true
+is_switched_on = false
+
+[node name="Sprite2D" parent="world/Electrics/casa4_cableado/dispositivos/microonda" index="0" unique_id=2041175647]
+position = Vector2(-4.500012, -5.000005)
+scale = Vector2(0.9843774, 0.7187494)
+
+[node name="cafetera" parent="world/Electrics/casa4_cableado/dispositivos" unique_id=1164631352 instance=ExtResource("11_u8t1u")]
+position = Vector2(2260, 400)
+nominal_power = 300.0
+has_switch = true
+
+[node name="Sprite2D" parent="world/Electrics/casa4_cableado/dispositivos/cafetera" index="0" unique_id=2041175647]
+position = Vector2(-6.0000544, -10.999989)
+scale = Vector2(0.6875014, 0.93750066)
+
+[node name="Cable220v" parent="world/Electrics/casa4_cableado" unique_id=2037941774 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+position = Vector2(-159, 235)
+wire_gauge = 1
+connected_components = [NodePath("../220v/lavadora")]
+
+[node name="Cable_comun" parent="world/Electrics/casa4_cableado/Cable220v" index="0" unique_id=944044291]
+points = PackedVector2Array(1655, 355, 2221, 420, 2438, 421, 2903, 446)
+default_color = Color(0.9999998, 0.14810753, 0.64295584, 1)
+
+[node name="220v" type="Node" parent="world/Electrics/casa4_cableado" unique_id=652818244]
+
+[node name="lavadora" parent="world/Electrics/casa4_cableado/220v" unique_id=65237464 instance=ExtResource("11_u8t1u")]
+position = Vector2(2946, 458)
+nominal_voltage = 220.0
+nominal_power = 2000.0
+has_switch = true
+is_switched_on = false
+
+[node name="Sprite2D" parent="world/Electrics/casa4_cableado/220v/lavadora" index="0" unique_id=2041175647]
+position = Vector2(-5.5001187, -13.999998)
+scale = Vector2(1.203121, 1.4999994)
 
 [node name="world_border" type="ReferenceRect" parent="world" unique_id=1285442467]
 offset_left = -3981.0
@@ -368,9 +695,7 @@ max_zoom = 2.0
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/details" to="." method="_on_details_toggled"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/toggle_all_devices" to="." method="_on_toggle_all_devices_toggled"]
 
-[editable path="world/Electrics/CableExterno1"]
-[editable path="world/Electrics/CableExterno2"]
-[editable path="world/Electrics/CableExterno3"]
+[editable path="world/Electrics/CableExternoCasa1"]
 [editable path="world/Electrics/casa1_cableado/Fase1Cable110v"]
 [editable path="world/Electrics/casa1_cableado/luminaria/Cable2"]
 [editable path="world/Electrics/casa1_cableado/luminaria/Cable3"]
@@ -379,5 +704,26 @@ max_zoom = 2.0
 [editable path="world/Electrics/casa1_cableado/Lavadora"]
 [editable path="world/Electrics/casa1_cableado/Fase2Cable110v"]
 [editable path="world/Electrics/casa1_cableado/Dispositivo"]
-[editable path="world/Electrics/CableExterno4"]
+[editable path="world/Electrics/CableExternoCasa2"]
 [editable path="world/Electrics/casa2_cableado/luminaria/cableluminaria"]
+[editable path="world/Electrics/CableExternoCasa3"]
+[editable path="world/Electrics/casa3_cableado/luminaria/casa3_luminaria"]
+[editable path="world/Electrics/casa3_cableado/luminaria/ventilador_techo"]
+[editable path="world/Electrics/casa3_cableado/luminaria/ventilador_techo2"]
+[editable path="world/Electrics/casa3_cableado/fase2_electronicos/Fase2"]
+[editable path="world/Electrics/casa3_cableado/fase2_electronicos/ventilador"]
+[editable path="world/Electrics/casa3_cableado/fase2_electronicos/microondas"]
+[editable path="world/Electrics/casa3_cableado/fase2_electronicos/nevera"]
+[editable path="world/Electrics/casa3_cableado/fase2_electronicos/ventilador_sala"]
+[editable path="world/Electrics/casa3_cableado/fase2_electronicos/TV_sala"]
+[editable path="world/Electrics/casa3_cableado/cable_220v"]
+[editable path="world/Electrics/casa3_cableado/220v/Dispositivo"]
+[editable path="world/Electrics/CableExternoCasa4"]
+[editable path="world/Electrics/casa4_cableado/luminaria/CableLuminaria"]
+[editable path="world/Electrics/casa4_cableado/Fase2"]
+[editable path="world/Electrics/casa4_cableado/dispositivos/lampara_cama"]
+[editable path="world/Electrics/casa4_cableado/dispositivos/lampara"]
+[editable path="world/Electrics/casa4_cableado/dispositivos/microonda"]
+[editable path="world/Electrics/casa4_cableado/dispositivos/cafetera"]
+[editable path="world/Electrics/casa4_cableado/Cable220v"]
+[editable path="world/Electrics/casa4_cableado/220v/lavadora"]

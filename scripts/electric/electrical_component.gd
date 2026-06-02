@@ -1,57 +1,80 @@
 extends Node2D
 class_name ElectricalComponent
 
-# Variables eléctricas fundamentales
-var voltage_in: float = 0.0      # Voltios (V) que recibe el nodo
-var current_draw: float = 0.0    # Amperios (A) que consume o transmite este nodo
-var equivalent_resistance: float = 0.0 # Ohmios (Ω) de este nodo y todo lo conectado a él
+# Variables eléctricas base
+var voltage_in: float = 0.0
+var current_draw: float = 0.0
+var equivalent_resistance: float = INF
 
-# Referencias a otros nodos (para armar la red)
-var parent_node: ElectricalComponent = null
-var connected_children: Array[ElectricalComponent] = []
-
-# Variables visuales
-var debug_label: Label
-var is_showing_details: bool = false
+# --- NUEVA UI AVANZADA ---
+var ui_container: PanelContainer
+var v_box: VBoxContainer
+var header_label: Label
+var details_label: Label
+var is_expanded: bool = false
+var is_ui_visible: bool = false
 
 func _ready() -> void:
-	# 1. Añadimos el componente a un grupo global
 	add_to_group("electrical_components")
+	_setup_ui()
+
+func _setup_ui() -> void:
+	# 1. Contenedor principal con fondo
+	ui_container = PanelContainer.new()
+	add_child(ui_container)
+	ui_container.visible = false
 	
-	# 2. Creamos la etiqueta de texto dinámicamente
-	debug_label = Label.new()
-	add_child(debug_label)
-	debug_label.visible = false
+	# Estilo del panel (Fondo oscuro semitransparente)
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0.7) # Negro con 70% opacidad
+	style.set_border_width_all(1)
+	style.border_color = Color(0.5, 0.5, 0.5, 0.5)
+	style.set_corner_radius_all(4)
+	ui_container.add_theme_stylebox_override("panel", style)
 	
-	# 3. Le damos un estilo básico para que sea legible
-	debug_label.set("theme_override_font_sizes/font_size", 12)
-	debug_label.set("theme_override_colors/font_outline_color", Color(0, 0, 0, 1))
-	debug_label.set("theme_override_constants/outline_size", 4)
-	debug_label.position = Vector2(-30, -30) # Lo desfasamos un poco para no tapar el sprite
-	debug_label.z_index = 10 # Asegura que se dibuje por encima de los cables
+	# 2. Organización vertical
+	v_box = VBoxContainer.new()
+	ui_container.add_child(v_box)
+	
+	# 3. Encabezado (Nombre + Botón de expansión)
+	header_label = Label.new()
+	header_label.text = "[ %s ]" % name
+	header_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header_label.mouse_filter = Control.MOUSE_FILTER_STOP # Permite clics
+	header_label.gui_input.connect(_on_header_input) # Detectar clic
+	v_box.add_child(header_label)
+	
+	# 4. Detalles (Lo que se contrae/expande)
+	details_label = Label.new()
+	details_label.visible = is_expanded
+	details_label.add_theme_font_size_override("font_size", 12)
+	v_box.add_child(details_label)
+	
+	# Posición inicial
+	ui_container.position = Vector2(20, -20)
+
+func _on_header_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		toggle_expansion()
+
+func toggle_expansion() -> void:
+	is_expanded = !is_expanded
+	if details_label:
+		details_label.visible = is_expanded
 
 func _process(_delta: float) -> void:
-	# Solo consumimos recursos actualizando el texto si está visible
-	if is_showing_details and debug_label:
-		debug_label.text = get_debug_text()
+	if is_ui_visible:
+		update_ui_content()
 
-# Esta función devuelve el texto. Las clases hijas pueden "sobrescribirla" (override)
+func update_ui_content() -> void:
+	# El encabezado ahora puede mostrar un resumen rápido (Voltaje)
+	header_label.text = "[ %s ] %.1fV" % [name, voltage_in]
+	# Los detalles muestran todo lo demás
+	details_label.text = get_debug_text()
+
 func get_debug_text() -> String:
-	# Añadimos '%s' al principio para inyectar la variable 'name'
-	return "[ %s ]\nV: %.1f V\nI: %.2f A" % [name, voltage_in, current_draw]
+	return "I: %.2f A\nR: %.1f Ω" % [current_draw, equivalent_resistance]
 
-# Función que será llamada por el botón de la UI
 func set_details_visible(visible: bool) -> void:
-	is_showing_details = visible
-	if debug_label:
-		debug_label.visible = visible
-
-# Función abstracta que cada hijo deberá sobrescribir
-func update_electrical_state(received_voltage: float) -> void:
-	push_warning("update_electrical_state() debe ser sobrescrita por las clases hijas.")
-
-# Función para calcular cuánta corriente "pide" este nodo hacia arriba
-func calculate_current() -> float:
-	if equivalent_resistance <= 0.0:
-		return 0.0
-	return voltage_in / equivalent_resistance
+	is_ui_visible = visible
+	ui_container.visible = visible

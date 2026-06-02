@@ -1,12 +1,13 @@
 [gd_scene format=3 uid="uid://o4mkde2w7i5m"]
 
 [ext_resource type="Script" uid="uid://ckde4mdtmgg5b" path="res://scripts/electric/electrical_split_phase_panel.gd" id="1_lnxwd"]
-[ext_resource type="Texture2D" uid="uid://4psin0nnjsu1" path="res://assets/tablero.png" id="2_xu6cp"]
 
-[node name="SplitPanel" type="Node2D" unique_id=1067720490]
+[node name="ElectricalSplitPhasePanel" type="Node2D" unique_id=451169415]
 script = ExtResource("1_lnxwd")
 metadata/_custom_type_script = "uid://ckde4mdtmgg5b"
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1975274087]
-scale = Vector2(0.12439934, 0.12439933)
-texture = ExtResource("2_xu6cp")
+[node name="Marker2D" type="Marker2D" parent="." unique_id=1986077465]
+gizmo_extents = 100.0
+
+[node name="Marker2D2" type="Marker2D" parent="." unique_id=1836756899]
+gizmo_extents = 100.0

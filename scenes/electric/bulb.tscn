@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dlvlr1461f452"]
 
 [ext_resource type="Script" uid="uid://dpcvyigv6kvrl" path="res://scripts/electric/electrical_consumer.gd" id="1_dqrhg"]
+[ext_resource type="Texture2D" uid="uid://brf7shkr5hqwo" path="res://assets/lights/neutral_light.webp" id="2_qghri"]
 
 [sub_resource type="Gradient" id="Gradient_qghri"]
 offsets = PackedFloat32Array(0, 0.44018555)
@@ -9,16 +10,25 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_hbcm3"]
 gradient = SubResource("Gradient_qghri")
 fill = 1
-fill_from = Vector2(0.51530147, 0.5875904)
+fill_from = Vector2(0.5060708, 0.4872471)
 
-[node name="Bombillo" type="Node2D" unique_id=93010359 node_paths=PackedStringArray("visual_sprite")]
+[node name="Bombillo" type="Node2D" unique_id=93010359 node_paths=PackedStringArray("visual_sprite", "visual_light")]
 script = ExtResource("1_dqrhg")
 nominal_power = 60.0
 min_power_on_percent = 0.6
 max_safe_percent = 1.05
 burnout_percent = 1.1
-visual_sprite = NodePath("Sprite2D")
+visual_sprite = NodePath("roundlight")
+visual_light = NodePath("PointLight2D")
 metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1207115574]
+[node name="roundlight" type="Sprite2D" parent="." unique_id=1952802222]
+visible = false
 texture = SubResource("GradientTexture2D_hbcm3")
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=969260102]
+color = Color(0.99215686, 0.9843137, 0.79607844, 0.99607843)
+energy = 0.7
+shadow_enabled = true
+texture = ExtResource("2_qghri")
+texture_scale = 2.0
