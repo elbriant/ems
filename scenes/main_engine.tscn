@@ -16,6 +16,17 @@
 [ext_resource type="PackedScene" uid="uid://cej56u4veatyw" path="res://scenes/electric/common_device.tscn" id="11_u8t1u"]
 [ext_resource type="PackedScene" uid="uid://o4mkde2w7i5m" path="res://scenes/electric/common_panel.tscn" id="14_5rlws"]
 [ext_resource type="Texture2D" uid="uid://bdpsvdxxnf7kp" path="res://assets/lights/64x64 textures  (2).png" id="15_8bnuv"]
+[ext_resource type="Script" uid="uid://fi2jjbtxplcu" path="res://scripts/day_night_cycle.gd" id="16_cyc"]
+
+[sub_resource type="Gradient" id="Gradient_voltage"]
+offsets = PackedFloat32Array(0, 0.118, 0.353, 0.588, 1)
+colors = PackedColorArray(1, 0, 0.05, 1, 1, 0.6, 0, 1, 0, 1, 0, 1, 1, 0.6, 0, 1, 1, 0, 0.05, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_voltage"]
+gradient = SubResource("Gradient_voltage")
+width = 60
+height = 110
+fill_to = Vector2(0, 1)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_nj3ym"]
 cull_mode = 2
@@ -23,6 +34,9 @@ polygon = PackedVector2Array(-965.8921, -403.259, 1049.6167, -406.40332, 1008.74
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_8bnuv"]
 polygon = PackedVector2Array(-851.6841, -336.6738, -338.6006, -337.2283, -330.73975, -214.59985, -294.58008, -220.88849, -310.6703, -340.41525, 536.1433, -342.99835, 518.22656, -231.89362, 537.0925, -227.17712, 563.8191, -334.08398, 971.0083, -337.2283, 969.4365, 98.2599, -854.3433, 105.7601, -854.3433, -350.33026, -854.3433, -350.33026, -855.99585, -401.5578, -879.13086, -401.5578, -883.35156, 278.33917, -854.3433, 280.92526, -845.0176, 156.66995, 434.9021, 154.85762, 436.47412, 277.48608, 467.91748, 274.3418, 467.91748, 158.00197, 710.0298, 156.4298, 721.03516, 602.9231, 758.7671, 602.9231, 757.1948, 158.00197, 950.0205, 151.66983, 956.6875, 600.01263, 1001.41595, 596.553, 998.111, -398.2528, -855.99585, -401.5578)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_5rlws"]
+polygon = PackedVector2Array(-0.5070801, 0, 4229.716, 0, 4230.7305, 258, 0.5070801, 259)
 
 [node name="mainEngine" type="Node" unique_id=280952739]
 script = ExtResource("1_smoar")
@@ -48,6 +62,24 @@ anchor_bottom = 1.0
 offset_top = -142.0
 grow_horizontal = 2
 grow_vertical = 0
+
+[node name="VoltageGradientBg" type="TextureRect" parent="CanvasLayer/UI/Panel" unique_id=247717212]
+modulate = Color(1, 1, 1, 0.49803922)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -81.0
+offset_top = -124.0
+offset_right = -21.0
+offset_bottom = -14.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_voltage")
+expand_mode = 3
 
 [node name="VSlider" type="VSlider" parent="CanvasLayer/UI/Panel" unique_id=264478764]
 layout_mode = 1
@@ -93,22 +125,60 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer" unique_id=1219282422]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer" unique_id=959442071]
 layout_mode = 2
 
-[node name="reset" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer" unique_id=1525883394]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer" unique_id=1219282422]
+layout_mode = 2
+
+[node name="reset" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1525883394]
 layout_mode = 2
 text = "Reiniciar SIM"
 
-[node name="details" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer" unique_id=420158739]
+[node name="details" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=420158739]
 layout_mode = 2
 toggle_mode = true
 text = "Ver detalles"
 
-[node name="toggle_all_devices" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer" unique_id=1095669957]
+[node name="toggle_all_devices" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1095669957]
 layout_mode = 2
 toggle_mode = true
 text = "Activar/Desactivar todos"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer" unique_id=1596429476]
+layout_mode = 2
+
+[node name="sun_hour_box" type="HBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1216551640]
+layout_mode = 2
+
+[node name="sun_hour_label" type="Label" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box" unique_id=720666736]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "Hora:"
+
+[node name="sun_slider" type="HSlider" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box" unique_id=1699593544]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 24.0
+step = 0.1
+value = 12.0
+
+[node name="sun_angle_label" type="Label" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=249630034]
+layout_mode = 2
+text = "Angulo: N/A"
+
+[node name="manual_sun_toggle" type="CheckButton" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1168750382]
+layout_mode = 2
+text = "Fijar sol"
+
+[node name="Chart" type="Control" parent="CanvasLayer/UI/Panel" unique_id=1372125056]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 819.0
+offset_top = 6.0
+offset_right = 1069.0
+offset_bottom = 138.0
+mouse_filter = 2
 
 [node name="world" type="Node2D" parent="." unique_id=229086658]
 
@@ -189,6 +259,9 @@ rotation = 0.37896413
 energy = 0.2
 shadow_enabled = true
 
+[node name="DayNightCycle" type="Node" parent="world" unique_id=1804895803]
+script = ExtResource("16_cyc")
+
 [node name="floor" type="TextureRect" parent="world" unique_id=237406542]
 texture_filter = 1
 texture_repeat = 2
@@ -200,6 +273,9 @@ scale = Vector2(1.972, 1)
 texture = ExtResource("5_xvnu0")
 stretch_mode = 1
 metadata/_edit_lock_ = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="world/floor" unique_id=2123811005]
+occluder = SubResource("OccluderPolygon2D_5rlws")
 
 [node name="Electrics" type="Node2D" parent="world" unique_id=706016677]
 position = Vector2(-521, 222)
@@ -548,7 +624,7 @@ wire_gauge = 2
 connected_components = [NodePath("../casa4_cableado/ElectricalSplitPhasePanel")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExternoCasa4" index="0" unique_id=944044291]
-position = Vector2(7, -1)
+position = Vector2(-22, -4)
 points = PackedVector2Array(1614, 385, 1613, 576, -477, 571, -477, 235)
 default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 
@@ -691,9 +767,12 @@ min_zoom = 0.8
 max_zoom = 2.0
 
 [connection signal="value_changed" from="CanvasLayer/UI/Panel/VSlider" to="." method="_on_v_slider_value_changed"]
-[connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/reset" to="." method="_on_reset_button_down"]
-[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/details" to="." method="_on_details_toggled"]
-[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/VBoxContainer/toggle_all_devices" to="." method="_on_toggle_all_devices_toggled"]
+[connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/reset" to="." method="_on_reset_button_down"]
+[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/details" to="." method="_on_details_toggled"]
+[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/toggle_all_devices" to="." method="_on_toggle_all_devices_toggled"]
+[connection signal="value_changed" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box/sun_slider" to="." method="_on_sun_slider_value_changed"]
+[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/manual_sun_toggle" to="." method="_on_manual_sun_toggled"]
+[connection signal="draw" from="CanvasLayer/UI/Panel/Chart" to="." method="_on_chart_draw"]
 
 [editable path="world/Electrics/CableExternoCasa1"]
 [editable path="world/Electrics/casa1_cableado/Fase1Cable110v"]

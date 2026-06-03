@@ -166,7 +166,8 @@ func _process(delta: float) -> void:
 		var voltage_ratio: float = 1.0
 		if nominal_voltage > 0.0:
 			voltage_ratio = voltage_in / nominal_voltage
-			
+
+		var night_boost: float = lerpf(1.3, 1.0, Globals.current_day_factor)
 		var flicker_mult: float = 1.0
 		var scale_mult: float = 1.0
 			
@@ -203,7 +204,7 @@ func _process(delta: float) -> void:
 			flicker_mult = randf_range(0.8, 1.4)
 			
 		visual_light.texture_scale = original_light_scale * scale_mult
-		visual_light.energy = (original_light_energy * voltage_ratio) * flicker_mult
+		visual_light.energy = (original_light_energy * voltage_ratio) * flicker_mult * night_boost
 
 func get_debug_text() -> String:
 	var base_text = super.get_debug_text()
