@@ -1,7 +1,8 @@
 extends Node
 @onready var voltage_label: Label = $CanvasLayer/UI/Panel/Label
+@onready var current_label: Label = $CanvasLayer/UI/Panel/CurrentLabel
 @onready var v_slider: VSlider = $CanvasLayer/UI/Panel/VSlider
-@onready var sun_slider: HSlider = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box/sun_slider 
+@onready var sun_slider: HSlider = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box/sun_slider
 @onready var sun_angle_label: Label = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_angle_label
 @onready var manual_sun_toggle: CheckButton = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/manual_sun_toggle
 @onready var day_night_cycle: Node = $world/DayNightCycle
@@ -19,6 +20,8 @@ func _ready() -> void:
 	voltage_history.append(v_slider.value)
 	if day_night_cycle:
 		day_night_cycle.sun_info_changed.connect(_on_sun_info_changed)
+	# Overlay pedagógico (tecla H): muestra al usuario las hipótesis del modelo
+	PedagogicalOverlay.create_and_attach(self)
 
 
 func update_ui_label(voltage: float) -> void:
@@ -30,6 +33,18 @@ func _process(delta: float) -> void:
 	if sample_timer >= SAMPLE_INTERVAL:
 		sample_timer = 0.0
 		record_sample(v_slider.value)
+		update_current_label()
+
+func update_current_label() -> void:
+	# Suma la corriente de todas las power_sources (típicamente una sola).
+	# Usamos la variable current_draw que ElectricalSource actualiza en cada update_network().
+	var sources := get_tree().get_nodes_in_group("power_sources")
+	var total: float = 0.0
+	for s in sources:
+		if s != null and "current_draw" in s:
+			total += s.current_draw
+	if current_label:
+		current_label.text = "Corriente total: %.2f A" % total
 
 
 func record_sample(value: float) -> void:
@@ -54,6 +69,15 @@ func _on_details_toggled(toggled_on: bool) -> void:
 
 func _on_toggle_all_devices_toggled(toggled_on: bool) -> void:
 	get_tree().call_group("switchable_devices", "set_switch_state_externally", toggled_on)
+	get_tree().call_group("power_sources", "update_network")
+
+# Demo de carga residencial: enciende simultáneamente todas las lavadoras
+# marcadas con is_washer=true, generando un pico de inrush compuesto.
+# Útil para visualizar la caída de tensión en la acometida cuando muchos
+# motores arrancan a la vez (escenario típico de hora punta).
+func _on_washer_demo_button_down() -> void:
+	get_tree().call_group("washers", "set_switch_state_externally", true)
+	# Forzamos recálculo inmediato para que el pico de inrush se dispare ya.
 	get_tree().call_group("power_sources", "update_network")
 
 
@@ -91,8 +115,8 @@ func _on_chart_draw() -> void:
 
 	chart.draw_rect(Rect2(Vector2.ZERO, chart.size), Color(0, 0, 0, 0.35))
 
-	var safe_top: float = (1.0 - (260.0 - min_v) / range_v) * h
-	var safe_bot: float = (1.0 - (180.0 - min_v) / range_v) * h
+	var safe_top: float = (1.0 - (250.0 - min_v) / range_v) * h
+	var safe_bot: float = (1.0 - (190.0 - min_v) / range_v) * h
 	var safe_h: float = safe_bot - safe_top
 	if safe_h > 0:
 		chart.draw_rect(Rect2(Vector2(0, safe_top), Vector2(w, safe_h)), Color(0, 1, 0, 0.07))

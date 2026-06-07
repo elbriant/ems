@@ -3,7 +3,12 @@ class_name ElectricalSource
 
 @export_category("Configuración de Fuente")
 @export var supply_voltage: float = 220.0 # Voltaje base de la red
-@export var voltage_drop_factor: float = 0.4 # Factor de caída de tensión por carga (reducido)
+## Impedancia Thévenin equivalente de la red pública de baja tensión (Ω).
+## 0.5 Ω es un valor típico: con 220V da corriente de cortocircuito ~440A,
+## dentro del rango real de 200-1000A para instalaciones residenciales.
+## Modela la caída V_drop = I_total · Z_source, físicamente más correcto
+## que un factor ad-hoc multiplicado por la corriente.
+@export var source_impedance: float = 0.5
 
 @export_category("Conexiones de Red")
 # Ahora sí podrás arrastrar los ElectricalWire principales a esta lista en el inspector
@@ -25,23 +30,27 @@ func change_supply_voltage(new_voltage: float) -> void:
 
 # Inicia la reacción en cadena por todo el grafo eléctrico
 func update_network() -> void:
-	# Pass 1: Calcular corriente aproximada
+	# Pass 1: Calcular corriente aproximada con voltaje nominal
 	var total_system_current: float = 0.0
 	for child in connected_components:
 		if child != null:
 			child.update_electrical_state(supply_voltage)
 			total_system_current += child.current_draw
-	
-	# Pass 2: Calcular caída de tensión y propagar el voltaje real
-	var voltage_sag = total_system_current * voltage_drop_factor
-	voltage_in = clamp(supply_voltage - voltage_sag, 0.0, supply_voltage)
-	
+
+	# Caída de tensión en la impedancia de la fuente (Ley de Ohm: V = I · Z)
+	# Solo se modela la impedancia agregada de la acometida pública;
+	# los cables aguas abajo ya aplican su propia caída en ElectricalWire.
+	voltage_in = clamp(supply_voltage - total_system_current * source_impedance, 0.0, supply_voltage)
+
+	# Pass 2: Propagar el voltaje corregido por la red.
+	# ElectricalWire.update_electrical_state() ya hace la doble pasada local
+	# (cables en cascada recalculan voltage_drop en cada nivel).
 	total_system_current = 0.0
 	for child in connected_components:
 		if child != null:
 			child.update_electrical_state(voltage_in)
 			total_system_current += child.current_draw
-			
+
 	current_draw = total_system_current
 
 # --- NUEVO: Panel de Depuración de la Fuente ---

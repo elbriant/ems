@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://cn0dj3ph1q5wx"]
+
+[ext_resource type="Script" uid="uid://c4plbf7guq4a1" path="res://scripts/electric/electrical_distribution_panel.gd" id="1_dpanel"]
+
+[node name="ElectricalDistributionPanel" type="Node2D"]
+script = ExtResource("1_dpanel")
+metadata/_custom_type_script = "uid://c4plbf7guq4a1"
+
+[node name="Marker2D" type="Marker2D" parent="."]
+gizmo_extents = 100.0

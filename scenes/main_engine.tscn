@@ -11,22 +11,41 @@
 [ext_resource type="Texture2D" uid="uid://dlx5pgjqmnfl" path="res://assets/chozas/choza_4.png" id="7_8bnuv"]
 [ext_resource type="PackedScene" uid="uid://8x0kt7sdx03q" path="res://scenes/electric/common_power_source.tscn" id="8_p0sv3"]
 [ext_resource type="PackedScene" uid="uid://c3scfbnstvrvm" path="res://scenes/electric/common_cable.tscn" id="8_y5x8j"]
-[ext_resource type="Script" uid="uid://ckde4mdtmgg5b" path="res://scripts/electric/electrical_split_phase_panel.gd" id="9_82g61"]
 [ext_resource type="PackedScene" uid="uid://dlvlr1461f452" path="res://scenes/electric/bulb.tscn" id="10_u8t1u"]
 [ext_resource type="PackedScene" uid="uid://cej56u4veatyw" path="res://scenes/electric/common_device.tscn" id="11_u8t1u"]
+[ext_resource type="Script" uid="uid://slqwam3edxp8" path="res://scripts/electric/voltage_regulator.gd" id="12_4f4dr"]
+[ext_resource type="Script" uid="uid://c4plbf7guq4a1" path="res://scripts/electric/electrical_distribution_panel.gd" id="12_h31jv"]
+[ext_resource type="Script" uid="uid://h33iig25n5xo" path="res://scripts/electric/branch_circuit.gd" id="13_4f4dr"]
 [ext_resource type="PackedScene" uid="uid://o4mkde2w7i5m" path="res://scenes/electric/common_panel.tscn" id="14_5rlws"]
+[ext_resource type="PackedScene" uid="uid://cn0dj3ph1q5wx" path="res://scenes/electric/common_distribution_panel.tscn" id="15_dpanel"]
 [ext_resource type="Texture2D" uid="uid://bdpsvdxxnf7kp" path="res://assets/lights/64x64 textures  (2).png" id="15_8bnuv"]
 [ext_resource type="Script" uid="uid://fi2jjbtxplcu" path="res://scripts/day_night_cycle.gd" id="16_cyc"]
 
+[sub_resource type="Gradient" id="Gradient_5rlws"]
+offsets = PackedFloat32Array(0, 0.4767928, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 0.6937739, 0, 0, 0, 0.83137256)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_h31jv"]
+gradient = SubResource("Gradient_5rlws")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4f4dr"]
+texture = SubResource("GradientTexture2D_h31jv")
+
 [sub_resource type="Gradient" id="Gradient_voltage"]
 offsets = PackedFloat32Array(0, 0.118, 0.353, 0.588, 1)
-colors = PackedColorArray(1, 0, 0.05, 1, 1, 0.6, 0, 1, 0, 1, 0, 1, 1, 0.6, 0, 1, 1, 0, 0.05, 1)
+colors = PackedColorArray(1, 0.21176471, 0.13333334, 1, 1, 0.6, 0, 1, 0.321462, 0.99999994, 0.29398593, 1, 1, 0.6, 0, 1, 1, 0.21176471, 0.13333334, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_voltage"]
 gradient = SubResource("Gradient_voltage")
 width = 60
 height = 110
 fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_n1a54"]
+texture = SubResource("GradientTexture2D_voltage")
+expand_margin_left = 4.0
+expand_margin_right = 4.0
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_nj3ym"]
 cull_mode = 2
@@ -36,7 +55,7 @@ polygon = PackedVector2Array(-965.8921, -403.259, 1049.6167, -406.40332, 1008.74
 polygon = PackedVector2Array(-851.6841, -336.6738, -338.6006, -337.2283, -330.73975, -214.59985, -294.58008, -220.88849, -310.6703, -340.41525, 536.1433, -342.99835, 518.22656, -231.89362, 537.0925, -227.17712, 563.8191, -334.08398, 971.0083, -337.2283, 969.4365, 98.2599, -854.3433, 105.7601, -854.3433, -350.33026, -854.3433, -350.33026, -855.99585, -401.5578, -879.13086, -401.5578, -883.35156, 278.33917, -854.3433, 280.92526, -845.0176, 156.66995, 434.9021, 154.85762, 436.47412, 277.48608, 467.91748, 274.3418, 467.91748, 158.00197, 710.0298, 156.4298, 721.03516, 602.9231, 758.7671, 602.9231, 757.1948, 158.00197, 950.0205, 151.66983, 956.6875, 600.01263, 1001.41595, 596.553, 998.111, -398.2528, -855.99585, -401.5578)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_5rlws"]
-polygon = PackedVector2Array(-0.5070801, 0, 4229.716, 0, 4230.7305, 258, 0.5070801, 259)
+polygon = PackedVector2Array(0.5070801, 33, 4230.223, 37, 4230.7305, 258, 0.5070801, 259)
 
 [node name="mainEngine" type="Node" unique_id=280952739]
 script = ExtResource("1_smoar")
@@ -62,8 +81,11 @@ anchor_bottom = 1.0
 offset_top = -142.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_4f4dr")
 
 [node name="VoltageGradientBg" type="TextureRect" parent="CanvasLayer/UI/Panel" unique_id=247717212]
+visible = false
 modulate = Color(1, 1, 1, 0.49803922)
 layout_mode = 1
 anchors_preset = 3
@@ -94,6 +116,7 @@ offset_right = -10.0
 offset_bottom = -14.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_styles/slider = SubResource("StyleBoxTexture_n1a54")
 min_value = 110.0
 max_value = 280.0
 step = 10.0
@@ -113,6 +136,21 @@ offset_bottom = -96.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "Voltaje actual: %.1f"
+
+[node name="CurrentLabel" type="Label" parent="CanvasLayer/UI/Panel" unique_id=1520650551]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -234.0
+offset_top = -98.0
+offset_right = -96.0
+offset_bottom = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Corriente total: 0.00 A"
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/UI/Panel" unique_id=1299505154]
 layout_mode = 1
@@ -144,6 +182,10 @@ text = "Ver detalles"
 layout_mode = 2
 toggle_mode = true
 text = "Activar/Desactivar todos"
+
+[node name="washer_demo" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1095669958]
+layout_mode = 2
+text = "🚿 Encender lavadoras"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer" unique_id=1596429476]
 layout_mode = 2
@@ -287,7 +329,7 @@ connected_components = [NodePath("../CableExternoCasa1"), NodePath("../CableExte
 [node name="CableExternoCasa1" parent="world/Electrics" unique_id=417744749 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-1559, 260.00003)
 wire_gauge = 2
-connected_components = [NodePath("../casa1_cableado/ElectricalSplitPhasePanel")]
+connected_components = [NodePath("../casa1_cableado/VoltageRegulator")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExternoCasa1" index="0" unique_id=944044291]
 position = Vector2(-2210.9998, 494.99997)
@@ -298,35 +340,55 @@ default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 [node name="casa1_cableado" type="Node2D" parent="world/Electrics" unique_id=1896064299]
 position = Vector2(-1004, 51)
 
-[node name="ElectricalSplitPhasePanel" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=622510636 node_paths=PackedStringArray("phase_1_components", "phase_2_components", "biphasic_components")]
-position = Vector2(-553, 82)
-script = ExtResource("9_82g61")
-phase_1_components = [NodePath("../Fase1Cable110v")]
-phase_2_components = [NodePath("../Fase2Cable110v")]
-biphasic_components = [NodePath("../Cable220v")]
-metadata/_custom_type_script = "uid://ckde4mdtmgg5b"
+[node name="VoltageRegulator" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=2032469552 node_paths=PackedStringArray("connected_components")]
+position = Vector2(-557, 119)
+script = ExtResource("12_4f4dr")
+connected_components = [NodePath("../ElectricalDistribiutionPanel")]
 
-[node name="Marker2D" type="Marker2D" parent="world/Electrics/casa1_cableado/ElectricalSplitPhasePanel" unique_id=524101237]
+[node name="ElectricalDistribiutionPanel" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=1992293256 node_paths=PackedStringArray("phase_1_circuits", "phase_2_circuits", "biphasic_circuits")]
+position = Vector2(-553, 82)
+script = ExtResource("12_h31jv")
+phase_1_circuits = [NodePath("BLumi")]
+phase_2_circuits = [NodePath("BSala")]
+biphasic_circuits = [NodePath("B_Lavadora")]
+metadata/_custom_type_script = "uid://c4plbf7guq4a1"
+
+[node name="Marker2D" type="Marker2D" parent="world/Electrics/casa1_cableado/ElectricalDistribiutionPanel" unique_id=524101237]
 gizmo_extents = 100.0
+
+[node name="BLumi" type="Node" parent="world/Electrics/casa1_cableado/ElectricalDistribiutionPanel" unique_id=2063629067 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "luminaria"
+rated_current = 15.0
+magnetic_curve = 0
+connected_components = [NodePath("../../Fase1Cable110v")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
+
+[node name="BSala" type="Node" parent="world/Electrics/casa1_cableado/ElectricalDistribiutionPanel" unique_id=1899876226 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "luminaria"
+rated_current = 15.0
+magnetic_curve = 0
+connected_components = [NodePath("../../CableSala")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
+
+[node name="B_Lavadora" type="Node" parent="world/Electrics/casa1_cableado/ElectricalDistribiutionPanel" unique_id=1398485213 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Lavadora"
+rated_current = 30.0
+magnetic_curve = 2
+connected_components = [NodePath("../../CableLavadora")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
 
 [node name="Fase1Cable110v" parent="world/Electrics/casa1_cableado" unique_id=2014134022 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-543, -19)
-connected_components = [NodePath("../luminaria/Cable2")]
+connected_components = [NodePath("../luminaria/Bombillo5"), NodePath("../luminaria/Bombillo6"), NodePath("../luminaria/Bombillo7"), NodePath("../luminaria/Bombillo8"), NodePath("../luminaria/Bombillo9"), NodePath("../luminaria/Bombillo"), NodePath("../luminaria/Bombillo2"), NodePath("../luminaria/Bombillo3"), NodePath("../luminaria/Bombillo4")]
 
 [node name="Cable_comun" parent="world/Electrics/casa1_cableado/Fase1Cable110v" index="0" unique_id=944044291]
 position = Vector2(-2079, 318)
-points = PackedVector2Array(0, 0, 54, -58)
+points = PackedVector2Array(0, 0, 54, -58, 906, -62, 1151, -67, 904, -60, 907, -346, 1017, -347, 247, -347)
 
-[node name="luminaria" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=2005332219]
-
-[node name="Cable2" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1497128961 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(19, -13)
-length_meters = 15.0
-connected_components = [NodePath("../Bombillo5"), NodePath("../Bombillo6"), NodePath("../Bombillo7"), NodePath("../Bombillo8"), NodePath("../Bombillo9"), NodePath("../Cable3")]
-
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable2" index="0" unique_id=944044291]
-position = Vector2(-2027, 261)
-points = PackedVector2Array(0, 0, 1022, -4)
+[node name="luminaria" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=1838580111]
 
 [node name="Bombillo5" parent="world/Electrics/casa1_cableado/luminaria" unique_id=93010359 instance=ExtResource("10_u8t1u")]
 position = Vector2(-309, 15)
@@ -343,22 +405,6 @@ position = Vector2(358, 16)
 [node name="Bombillo9" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1828326260 instance=ExtResource("10_u8t1u")]
 position = Vector2(517, 15)
 
-[node name="Cable3" parent="world/Electrics/casa1_cableado/luminaria" unique_id=599562485 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(-172, -154)
-connected_components = [NodePath("../Cable4")]
-
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable3" index="0" unique_id=944044291]
-position = Vector2(-1699, 260)
-points = PackedVector2Array(0, 0, 1, -294)
-
-[node name="Cable4" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1416308810 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
-position = Vector2(75, -304)
-connected_components = [NodePath("../Bombillo"), NodePath("../Bombillo2"), NodePath("../Bombillo3"), NodePath("../Bombillo4")]
-
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/luminaria/Cable4" index="0" unique_id=944044291]
-position = Vector2(-1835, -43)
-points = PackedVector2Array(4, 11, 774, 11)
-
 [node name="Bombillo" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1553602894 instance=ExtResource("10_u8t1u")]
 position = Vector2(-305, -267)
 
@@ -371,11 +417,11 @@ position = Vector2(226, -268)
 [node name="Bombillo4" parent="world/Electrics/casa1_cableado/luminaria" unique_id=1626519750 instance=ExtResource("10_u8t1u")]
 position = Vector2(457, -266)
 
-[node name="Cable220v" parent="world/Electrics/casa1_cableado" unique_id=1095784023 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+[node name="CableLavadora" parent="world/Electrics/casa1_cableado" unique_id=1095784023 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-100, 157)
 connected_components = [NodePath("../Lavadora")]
 
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/Cable220v" index="0" unique_id=944044291]
+[node name="Cable_comun" parent="world/Electrics/casa1_cableado/CableLavadora" index="0" unique_id=944044291]
 position = Vector2(-2114, 305)
 points = PackedVector2Array(64, 50, 601, 142)
 
@@ -384,16 +430,19 @@ position = Vector2(40, 183)
 nominal_voltage = 220.0
 nominal_power = 1550.0
 has_switch = true
+is_switched_on = false
+is_washer = true
+device_class = 1
 
 [node name="Sprite2D" parent="world/Electrics/casa1_cableado/Lavadora" index="0" unique_id=2041175647]
 position = Vector2(1, -3.500001)
 scale = Vector2(0.96875, 1.4218751)
 
-[node name="Fase2Cable110v" parent="world/Electrics/casa1_cableado" unique_id=334893330 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
+[node name="CableSala" parent="world/Electrics/casa1_cableado" unique_id=334893330 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-387, 203)
 connected_components = [NodePath("../Dispositivo")]
 
-[node name="Cable_comun" parent="world/Electrics/casa1_cableado/Fase2Cable110v" index="0" unique_id=944044291]
+[node name="Cable_comun" parent="world/Electrics/casa1_cableado/CableSala" index="0" unique_id=944044291]
 points = PackedVector2Array(-2051, 397, -1879, 547, -1196, 548, -1208, 496)
 
 [node name="Dispositivo" parent="world/Electrics/casa1_cableado" unique_id=2060779347 instance=ExtResource("11_u8t1u")]
@@ -408,7 +457,7 @@ scale = Vector2(0.890625, 1.7499998)
 [node name="CableExternoCasa2" parent="world/Electrics" unique_id=1525873929 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(262, 245)
 wire_gauge = 2
-connected_components = [NodePath("../casa2_cableado/ElectricalSplitPhasePanel")]
+connected_components = [NodePath("../casa2_cableado/ElectricalDistributionPanel")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExternoCasa2" index="0" unique_id=944044291]
 position = Vector2(7, -1)
@@ -418,9 +467,18 @@ default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 [node name="casa2_cableado" type="Node2D" parent="world/Electrics" unique_id=1089561009]
 position = Vector2(933, 28)
 
-[node name="ElectricalSplitPhasePanel" parent="world/Electrics/casa2_cableado" unique_id=451169415 node_paths=PackedStringArray("phase_1_components") instance=ExtResource("14_5rlws")]
+[node name="ElectricalDistributionPanel" parent="world/Electrics/casa2_cableado" unique_id=451169415 node_paths=PackedStringArray("phase_1_circuits", "phase_2_circuits", "biphasic_circuits") instance=ExtResource("15_dpanel")]
 position = Vector2(-632, 103)
-phase_1_components = [NodePath("../luminaria/cableluminaria")]
+phase_1_circuits = [NodePath("BLumi")]
+metadata/_custom_type_script = "uid://c4plbf7guq4a1"
+
+[node name="BLumi" type="Node" parent="world/Electrics/casa2_cableado/ElectricalDistributionPanel" unique_id=851169415 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Luminaria"
+rated_current = 15.0
+magnetic_curve = 0
+connected_components = [NodePath("../../luminaria/cableluminaria")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
 
 [node name="luminaria" type="Node2D" parent="world/Electrics/casa2_cableado" unique_id=1527637642]
 
@@ -459,7 +517,7 @@ position = Vector2(443, 32)
 [node name="CableExternoCasa3" parent="world/Electrics" unique_id=1123177649 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-3186, 240)
 wire_gauge = 2
-connected_components = [NodePath("../casa3_cableado/panel_casa3")]
+connected_components = [NodePath("../casa3_cableado/ElectricalDistributionPanel")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExternoCasa3" index="0" unique_id=944044291]
 position = Vector2(7, -1)
@@ -468,11 +526,36 @@ default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 
 [node name="casa3_cableado" type="Node2D" parent="world/Electrics" unique_id=892315248]
 
-[node name="panel_casa3" parent="world/Electrics/casa3_cableado" unique_id=92862241 node_paths=PackedStringArray("phase_1_components", "phase_2_components", "biphasic_components") instance=ExtResource("14_5rlws")]
+[node name="ElectricalDistributionPanel" parent="world/Electrics/casa3_cableado" unique_id=92862241 node_paths=PackedStringArray("phase_1_circuits", "phase_2_circuits", "biphasic_circuits") instance=ExtResource("15_dpanel")]
 position = Vector2(-3184, 133)
-phase_1_components = [NodePath("../luminaria/casa3_luminaria"), NodePath("../fase2_electronicos/Fase2")]
-phase_2_components = [NodePath("../fase2_electronicos/Fase2")]
-biphasic_components = [NodePath("../cable_220v")]
+phase_1_circuits = [NodePath("BLumi"), NodePath("BElectronicos")]
+phase_2_circuits = [NodePath("BElectronicos")]
+biphasic_circuits = [NodePath("B220V")]
+metadata/_custom_type_script = "uid://c4plbf7guq4a1"
+
+[node name="BLumi" type="Node" parent="world/Electrics/casa3_cableado/ElectricalDistributionPanel" unique_id=92862242 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Luminaria"
+rated_current = 15.0
+magnetic_curve = 0
+connected_components = [NodePath("../../luminaria/casa3_luminaria")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
+
+[node name="BElectronicos" type="Node" parent="world/Electrics/casa3_cableado/ElectricalDistributionPanel" unique_id=92862243 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Electronicos"
+rated_current = 20.0
+magnetic_curve = 1
+connected_components = [NodePath("../../fase2_electronicos/Fase2")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
+
+[node name="B220V" type="Node" parent="world/Electrics/casa3_cableado/ElectricalDistributionPanel" unique_id=92862244 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Electrodomestico220V"
+rated_current = 30.0
+magnetic_curve = 2
+connected_components = [NodePath("../../cable_220v")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
 
 [node name="luminaria" type="Node2D" parent="world/Electrics/casa3_cableado" unique_id=860098181]
 
@@ -611,8 +694,11 @@ default_color = Color(0.9681842, 0.30959326, 0.7836234, 1)
 [node name="Dispositivo" parent="world/Electrics/casa3_cableado/220v" unique_id=206941707 instance=ExtResource("11_u8t1u")]
 position = Vector2(-2486, 452)
 nominal_voltage = 220.0
+nominal_power = 1000.0
 has_switch = true
 is_switched_on = false
+is_washer = true
+device_class = 1
 
 [node name="Sprite2D" parent="world/Electrics/casa3_cableado/220v/Dispositivo" index="0" unique_id=2041175647]
 position = Vector2(0.9999294, -6.0000124)
@@ -621,7 +707,7 @@ scale = Vector2(1.2499979, 1.5937496)
 [node name="CableExternoCasa4" parent="world/Electrics" unique_id=1838257775 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(2000, 237)
 wire_gauge = 2
-connected_components = [NodePath("../casa4_cableado/ElectricalSplitPhasePanel")]
+connected_components = [NodePath("../casa4_cableado/ElectricalDistributionPanel")]
 
 [node name="Cable_comun" parent="world/Electrics/CableExternoCasa4" index="0" unique_id=944044291]
 position = Vector2(-22, -4)
@@ -631,11 +717,36 @@ default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 [node name="casa4_cableado" type="Node2D" parent="world/Electrics" unique_id=489820330]
 position = Vector2(2768, 20)
 
-[node name="ElectricalSplitPhasePanel" parent="world/Electrics/casa4_cableado" unique_id=17556888 node_paths=PackedStringArray("phase_1_components", "phase_2_components", "biphasic_components") instance=ExtResource("14_5rlws")]
+[node name="ElectricalDistributionPanel" parent="world/Electrics/casa4_cableado" unique_id=17556888 node_paths=PackedStringArray("phase_1_circuits", "phase_2_circuits", "biphasic_circuits") instance=ExtResource("15_dpanel")]
 position = Vector2(-625, 101)
-phase_1_components = [NodePath("../luminaria/CableLuminaria")]
-phase_2_components = [NodePath("../Fase2")]
-biphasic_components = [NodePath("../Cable220v")]
+phase_1_circuits = [NodePath("BLumi")]
+phase_2_circuits = [NodePath("BElectronicos")]
+biphasic_circuits = [NodePath("BLavadora")]
+metadata/_custom_type_script = "uid://c4plbf7guq4a1"
+
+[node name="BLumi" type="Node" parent="world/Electrics/casa4_cableado/ElectricalDistributionPanel" unique_id=17556889 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Luminaria"
+rated_current = 15.0
+magnetic_curve = 0
+connected_components = [NodePath("../../luminaria/CableLuminaria")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
+
+[node name="BElectronicos" type="Node" parent="world/Electrics/casa4_cableado/ElectricalDistributionPanel" unique_id=17556890 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Electronicos"
+rated_current = 20.0
+magnetic_curve = 1
+connected_components = [NodePath("../../Fase2")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
+
+[node name="BLavadora" type="Node" parent="world/Electrics/casa4_cableado/ElectricalDistributionPanel" unique_id=17556891 node_paths=PackedStringArray("connected_components")]
+script = ExtResource("13_4f4dr")
+circuit_name = "Lavadora"
+rated_current = 30.0
+magnetic_curve = 2
+connected_components = [NodePath("../../Cable220v")]
+metadata/_custom_type_script = "uid://h33iig25n5xo"
 
 [node name="luminaria" type="Node" parent="world/Electrics/casa4_cableado" unique_id=1509067779]
 
@@ -737,6 +848,8 @@ nominal_voltage = 220.0
 nominal_power = 2000.0
 has_switch = true
 is_switched_on = false
+is_washer = true
+device_class = 1
 
 [node name="Sprite2D" parent="world/Electrics/casa4_cableado/220v/lavadora" index="0" unique_id=2041175647]
 position = Vector2(-5.5001187, -13.999998)
@@ -770,18 +883,16 @@ max_zoom = 2.0
 [connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/reset" to="." method="_on_reset_button_down"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/details" to="." method="_on_details_toggled"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/toggle_all_devices" to="." method="_on_toggle_all_devices_toggled"]
+[connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/washer_demo" to="." method="_on_washer_demo_button_down"]
 [connection signal="value_changed" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box/sun_slider" to="." method="_on_sun_slider_value_changed"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/manual_sun_toggle" to="." method="_on_manual_sun_toggled"]
 [connection signal="draw" from="CanvasLayer/UI/Panel/Chart" to="." method="_on_chart_draw"]
 
 [editable path="world/Electrics/CableExternoCasa1"]
 [editable path="world/Electrics/casa1_cableado/Fase1Cable110v"]
-[editable path="world/Electrics/casa1_cableado/luminaria/Cable2"]
-[editable path="world/Electrics/casa1_cableado/luminaria/Cable3"]
-[editable path="world/Electrics/casa1_cableado/luminaria/Cable4"]
-[editable path="world/Electrics/casa1_cableado/Cable220v"]
+[editable path="world/Electrics/casa1_cableado/CableLavadora"]
 [editable path="world/Electrics/casa1_cableado/Lavadora"]
-[editable path="world/Electrics/casa1_cableado/Fase2Cable110v"]
+[editable path="world/Electrics/casa1_cableado/CableSala"]
 [editable path="world/Electrics/casa1_cableado/Dispositivo"]
 [editable path="world/Electrics/CableExternoCasa2"]
 [editable path="world/Electrics/casa2_cableado/luminaria/cableluminaria"]

@@ -4,20 +4,61 @@ class_name ElectricalConsumer
 @export_category("Especificaciones de Fábrica")
 @export var nominal_voltage: float = 110.0
 @export var nominal_power: float = 1000.0
+## Factor de potencia (cos φ). 1.0 = resistivo puro, ~0.65 = motor de inducción típico
+@export var power_factor: float = 1.0
+## Rendimiento η. 1.0 = sin pérdidas, ~0.75 = motor típico
+@export var efficiency: float = 1.0
+
+@export_group("Clasificación del Dispositivo")
+## Define el comportamiento físico por defecto (cutoff, inrush, fp).
+## Si dejas los overrides numéricos en -1, se usan los valores por clase.
+enum DeviceClass { INCANDESCENT, MOTOR, COMPRESSOR, SMPS, MIXED }
+@export var device_class: DeviceClass = DeviceClass.MIXED
+
+## Cutoff de bajo voltaje por defecto según clase de dispositivo (fracción de V_nom).
+## INCANDESCENT aguanta hasta 60% (filamento se enfría y R baja, peligroso si V sube).
+## MOTOR/COMPRESSOR cortan a 85% (protección del bobinado).
+## SMPS aguanta hasta 80% (UVLO del capacitor bulk).
+const CLASS_CUTOFF: Dictionary = {
+	DeviceClass.INCANDESCENT: 0.60,
+	DeviceClass.MOTOR: 0.85,
+	DeviceClass.COMPRESSOR: 0.85,
+	DeviceClass.SMPS: 0.80,
+	DeviceClass.MIXED: 0.80,
+}
 
 @export_group("Umbrales de Tolerancia")
-@export var min_power_on_percent: float = 0.70  
-@export var min_safe_percent: float = 0.90      
-@export var max_safe_percent: float = 1.10      
-@export var burnout_percent: float = 1.25       
+## -1 = usar CLASS_CUTOFF[device_class]; cualquier otro valor = override manual
+@export var min_power_on_percent: float = -1.0
+@export var min_safe_percent: float = 0.90
+## IEC 60038: el rango normal es ±10% (extremo 1.10 es el límite, no "sobrevoltaje")
+@export var max_safe_percent: float = 1.05
+@export var burnout_percent: float = 1.25
 
 @export_group("Dinámica de Arranque (Inrush)")
-@export var inrush_multiplier: float = 2.5 # Consume 2.5 veces más al arrancar
-@export var inrush_duration: float = 0.5   # El pico dura medio segundo
+## -1 = usar INRUSH_PROFILES[device_class]
+@export var inrush_multiplier: float = -1.0
+@export var inrush_duration: float = -1.0
+
+## Perfiles reales de corriente de arranque:
+##   Bombilla incandescente fría: R_fría/R_caliente ≈ 1/12 → pico ~12× por 150 ms
+##   Motor inducción: 4-8× durante 1-3 s
+##   Compresor: 5-7× durante 200-500 ms (con PTC de arranque)
+##   SMPS: 1.5-2.5× durante 50-150 ms (carga de C_bulk)
+const INRUSH_PROFILES: Dictionary = {
+	DeviceClass.INCANDESCENT: [12.0, 0.15],
+	DeviceClass.MOTOR: [6.0, 2.0],
+	DeviceClass.COMPRESSOR: [6.0, 0.5],
+	DeviceClass.SMPS: [2.0, 0.1],
+	DeviceClass.MIXED: [2.5, 0.5],
+}
 
 @export_category("Control Manual")
-@export var has_switch: bool = false      
-@export var is_switched_on: bool = true   
+@export var has_switch: bool = false
+@export var is_switched_on: bool = true
+## Marcar como lavadora (usado por la demo de carga residencial para encender
+## todas simultáneamente). Al activarse, el nodo se añade al grupo "washers".
+@export var is_washer: bool = false
 
 @export_category("Visualización")
 @export var visual_sprite: Sprite2D 
@@ -42,7 +83,8 @@ func _ready() -> void:
 	super._ready() 
 	
 	if nominal_power > 0:
-		internal_resistance = pow(nominal_voltage, 2) / nominal_power
+		# R = V² · cos(φ) · η / P  (modela carga mixta resistiva-inductiva)
+		internal_resistance = pow(nominal_voltage, 2) * power_factor * efficiency / nominal_power
 		equivalent_resistance = internal_resistance
 	else:
 		internal_resistance = 0.0
@@ -57,13 +99,16 @@ func _ready() -> void:
 		original_light_scale = visual_light.texture_scale
 
 	if has_switch:
-		add_to_group("switchable_devices") 
+		add_to_group("switchable_devices")
 		toggle_button = CheckButton.new()
 		add_child(toggle_button)
 		toggle_button.button_pressed = is_switched_on
-		toggle_button.position = Vector2(-20, 20) 
+		toggle_button.position = Vector2(-20, 20)
 		toggle_button.z_index = 5
 		toggle_button.toggled.connect(_on_switch_toggled)
+
+	if is_washer:
+		add_to_group("washers")
 
 	# Evita el pico al iniciar la escena dando un "periodo de gracia" de 0.2 segundos
 	get_tree().create_timer(0.2).timeout.connect(func(): simulation_started = true)
@@ -91,10 +136,15 @@ func update_electrical_state(received_voltage: float) -> void:
 
 	equivalent_resistance = internal_resistance
 
+	# Si el override manual es -1 (o negativo), usar el cutoff por defecto de la clase
+	var effective_cutoff: float = min_power_on_percent
+	if effective_cutoff < 0.0:
+		effective_cutoff = CLASS_CUTOFF[device_class]
+
 	var v_burnout = nominal_voltage * burnout_percent
 	var v_over = nominal_voltage * max_safe_percent
 	var v_under = nominal_voltage * min_safe_percent
-	var v_cutoff = nominal_voltage * min_power_on_percent
+	var v_cutoff = nominal_voltage * effective_cutoff
 
 	if voltage_in > v_burnout:
 		current_state = DeviceState.BROKEN
@@ -125,14 +175,28 @@ func update_electrical_state(received_voltage: float) -> void:
 		if not is_inrush_active:
 			is_inrush_active = true
 			_handle_inrush_timer()
-			
+
+	# Resolver perfil de inrush: override manual o perfil por clase
+	var effective_inrush_mult: float = inrush_multiplier
+	var effective_inrush_dur: float = inrush_duration
+	if effective_inrush_mult < 0.0 or effective_inrush_dur < 0.0:
+		var profile: Array = INRUSH_PROFILES[device_class]
+		if effective_inrush_mult < 0.0:
+			effective_inrush_mult = profile[0]
+		if effective_inrush_dur < 0.0:
+			effective_inrush_dur = profile[1]
+
 	# Multiplicamos la corriente si el pico está activo
 	if is_inrush_active:
-		current_draw *= inrush_multiplier
+		current_draw *= effective_inrush_mult
 
 # Esta función espera X segundos y luego relaja el circuito
 func _handle_inrush_timer() -> void:
-	await get_tree().create_timer(inrush_duration).timeout
+	# Usar la duración efectiva resuelta arriba
+	var effective_inrush_dur: float = inrush_duration
+	if effective_inrush_dur < 0.0:
+		effective_inrush_dur = INRUSH_PROFILES[device_class][1]
+	await get_tree().create_timer(effective_inrush_dur).timeout
 	is_inrush_active = false
 	# Avisamos a la red que el pico terminó para que los cables se estabilicen
 	get_tree().call_group("power_sources", "update_network")
@@ -210,12 +274,17 @@ func get_debug_text() -> String:
 	var base_text = super.get_debug_text()
 	var state_strings = ["APAGADO", "BAJO VOLTAJE", "NORMAL", "SOBREVOLTAJE", "QUEMADO"]
 	var current_state_text = state_strings[current_state]
-	var power_consumed = voltage_in * current_draw
-	
+	var apparent_power = voltage_in * current_draw
+	# La potencia real consumida de la red es la aparente multiplicada por fp
+	# (es la energía que realmente se convierte en trabajo/calor en el dispositivo)
+	var real_power = apparent_power * power_factor
+
 	# Añadimos un pequeño aviso visual al texto si el Inrush está activo
 	var extra_info = " (¡PICO!)" if is_inrush_active else ""
-	
-	return "%s\nPotencia: %.1f W\nEstado: %s%s" % [base_text, power_consumed, current_state_text, extra_info]
+
+	return "%s\nP apar.: %.1f VA\nP real: %.1f W (fp=%.2f)\nEstado: %s%s" % [
+		base_text, apparent_power, real_power, power_factor, current_state_text, extra_info
+	]
 
 func set_switch_state_externally(turn_on: bool) -> void:
 	if not has_switch or current_state == DeviceState.BROKEN:
