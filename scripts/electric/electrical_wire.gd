@@ -16,6 +16,11 @@ var wire_resistance: float = 0.0
 var max_current: float = 0.0
 var voltage_drop: float = 0.0
 var thermal_stress: float = 0.0 # Porcentaje de 0.0 a 1.0+ para gráficos
+var _warning_cooldown: float = 0.0
+const WARNING_COOLDOWN: float = 3.0
+
+@export_group("Advertencias")
+@export var warning_config: WarningParticleConfig
 
 # Tabla de especificaciones reales para cobre a 25°C
 const AWG_SPECS = {
@@ -30,6 +35,12 @@ func _ready() -> void:
 	var specs = AWG_SPECS[wire_gauge]
 	max_current = specs["max_amps"]
 	wire_resistance = specs["ohms_per_meter"] * length_meters
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	# Update warning cooldown
+	if _warning_cooldown > 0.0:
+		_warning_cooldown -= delta * Globals.time_scale
 
 # --- MOTOR LÓGICO ---
 func update_electrical_state(received_voltage: float) -> void:
@@ -66,6 +77,21 @@ func update_electrical_state(received_voltage: float) -> void:
 	thermal_stress = current_draw / max_current
 	
 	verificar_integridad()
+	
+	# Spawn warning particle if overheating and warnings are enabled
+	if thermal_stress > 1.0 and Globals.show_overheating_warnings and _warning_cooldown <= 0.0:
+		_spawn_overheating_warning()
+		_warning_cooldown = WARNING_COOLDOWN
+
+func _spawn_overheating_warning() -> void:
+	var stress_percent = int(thermal_stress * 100)
+	WarningParticle.create_warning(
+		get_tree().current_scene.get_node("world"),
+		global_position + Vector2(0, -40),
+		"⚠ SOBRECARGA: %s al %d%%" % [name, stress_percent],
+		Color(1.0, 0.4, 0.1),
+		warning_config
+	)
 
 func verificar_integridad() -> void:
 	if thermal_stress > 1.2:

@@ -1,7 +1,11 @@
 [gd_scene format=3 uid="uid://cqqffvv3vs23b"]
 
 [ext_resource type="Script" uid="uid://dpcvyigv6kvrl" path="res://scripts/electric/electrical_consumer.gd" id="1_a7u4m"]
+[ext_resource type="Script" path="res://scripts/particles/device_overload_effect.gd" id="2_overload_fx"]
 
 [node name="ToggleDevice" type="Node2D" unique_id=1300712847]
 script = ExtResource("1_a7u4m")
 metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
+
+[node name="DeviceOverloadEffect" type="Node2D" parent="."]
+script = ExtResource("2_overload_fx")

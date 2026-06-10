@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="WarningParticleConfig" format=3 uid="uid://bkto72kcmsaij"]
+
+[ext_resource type="Script" uid="uid://c8ipdt0h02jjg" path="res://scripts/ui/warning_particle_config.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+lifetime = 1.2
+scale_curve = 0.2
+bg_color = Color(0, 0, 0, 0.60784316)
+show_icon = false
+entrance_animation = false
+metadata/_custom_type_script = "uid://c8ipdt0h02jjg"

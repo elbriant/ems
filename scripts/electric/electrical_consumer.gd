@@ -37,20 +37,25 @@ const CLASS_CUTOFF: Dictionary = {
 
 @export_group("Dinámica de Arranque (Inrush)")
 ## -1 = usar INRUSH_PROFILES[device_class]
-@export var inrush_multiplier: float = -1.0
-@export var inrush_duration: float = -1.0
+## k = multiplicador extra del pico (pico nominal = k+1 veces la corriente nominal)
+@export var inrush_k: float = -1.0
+## tau = constante de tiempo del decaimiento exponencial (segundos)
+@export var inrush_tau: float = -1.0
 
-## Perfiles reales de corriente de arranque:
-##   Bombilla incandescente fría: R_fría/R_caliente ≈ 1/12 → pico ~12× por 150 ms
-##   Motor inducción: 4-8× durante 1-3 s
-##   Compresor: 5-7× durante 200-500 ms (con PTC de arranque)
-##   SMPS: 1.5-2.5× durante 50-150 ms (carga de C_bulk)
+## Perfiles reales de corriente de arranque usando decaimiento exponencial:
+##   I(t) = I_nom × (k × exp(-t / τ) + 1)
+##
+##   SMPS: pico violentísimo (~30×) pero τ minúsculo, casi no afecta la red
+##   Incandescente: pico alto (~12×) pero se desvanece rápido (filamento se calienta)
+##   Motor: pico moderado (~6×) con τ largo (inercia del rotor)
+##   Compresor: pico fuerte (~5×) con τ muy largo (arranque pesado)
+##   Mixto: encendido suave,几乎 no impacta la red
 const INRUSH_PROFILES: Dictionary = {
-	DeviceClass.INCANDESCENT: [12.0, 0.15],
-	DeviceClass.MOTOR: [6.0, 2.0],
-	DeviceClass.COMPRESSOR: [6.0, 0.5],
-	DeviceClass.SMPS: [2.0, 0.1],
-	DeviceClass.MIXED: [2.5, 0.5],
+	DeviceClass.SMPS:         [29.0, 0.015],  # 30× nominal, desaparece en ~75 ms
+	DeviceClass.INCANDESCENT: [11.0, 0.04],   # 12× nominal, desaparece en ~200 ms
+	DeviceClass.MOTOR:        [6.0, 0.25],    # 7× nominal, desaparece en ~1.25 s
+	DeviceClass.COMPRESSOR:   [5.0, 0.8],     # 6× nominal, desaparece en ~4 s
+	DeviceClass.MIXED:        [1.5, 0.1],     # 2.5× nominal, desaparece en ~500 ms
 }
 
 @export_category("Control Manual")
@@ -75,9 +80,18 @@ var original_light_energy: float
 var original_light_scale: float
 var toggle_button: CheckButton 
 
-# Variables internas para el pico de corriente
+# Variables internas para el pico de corriente (modelo exponencial)
 var is_inrush_active: bool = false
+var inrush_time_elapsed: float = 0.0  # Tiempo transcurrido desde el encendido
 var simulation_started: bool = false
+
+# Para tracking de cambios de estado y warnings
+var _previous_state: DeviceState = DeviceState.OFF
+var _warning_cooldown: float = 0.0
+const WARNING_COOLDOWN: float = 4.0
+
+@export_group("Advertencias")
+@export var warning_config: WarningParticleConfig
 
 func _ready() -> void:
 	super._ready() 
@@ -174,35 +188,76 @@ func update_electrical_state(received_voltage: float) -> void:
 	if simulation_started and previous_state == DeviceState.OFF and current_state != DeviceState.OFF and current_state != DeviceState.BROKEN:
 		if not is_inrush_active:
 			is_inrush_active = true
-			_handle_inrush_timer()
+			inrush_time_elapsed = 0.0  # Reiniciar cronómetro del decaimiento exponencial
 
 	# Resolver perfil de inrush: override manual o perfil por clase
-	var effective_inrush_mult: float = inrush_multiplier
-	var effective_inrush_dur: float = inrush_duration
-	if effective_inrush_mult < 0.0 or effective_inrush_dur < 0.0:
+	var effective_k: float = inrush_k
+	var effective_tau: float = inrush_tau
+	if effective_k < 0.0 or effective_tau < 0.0:
 		var profile: Array = INRUSH_PROFILES[device_class]
-		if effective_inrush_mult < 0.0:
-			effective_inrush_mult = profile[0]
-		if effective_inrush_dur < 0.0:
-			effective_inrush_dur = profile[1]
+		if effective_k < 0.0:
+			effective_k = profile[0]
+		if effective_tau < 0.0:
+			effective_tau = profile[1]
 
-	# Multiplicamos la corriente si el pico está activo
+	# Aplicar decaimiento exponencial: I(t) = I_nom × (k × exp(-t / τ) + 1)
 	if is_inrush_active:
-		current_draw *= effective_inrush_mult
+		var inrush_mult: float = (effective_k * exp(-inrush_time_elapsed / effective_tau)) + 1.0
+		current_draw *= inrush_mult
+	
+	# Spawn warning particles on state transitions to OVERVOLTAGE or BROKEN
+	_check_and_spawn_warnings(previous_state)
 
-# Esta función espera X segundos y luego relaja el circuito
-func _handle_inrush_timer() -> void:
-	# Usar la duración efectiva resuelta arriba
-	var effective_inrush_dur: float = inrush_duration
-	if effective_inrush_dur < 0.0:
-		effective_inrush_dur = INRUSH_PROFILES[device_class][1]
-	await get_tree().create_timer(effective_inrush_dur).timeout
-	is_inrush_active = false
-	# Avisamos a la red que el pico terminó para que los cables se estabilicen
-	get_tree().call_group("power_sources", "update_network")
+func _check_and_spawn_warnings(previous_state: DeviceState) -> void:
+	if not Globals.show_overheating_warnings:
+		return
+	
+	# Check for state transitions that warrant warnings
+	var should_warn = false
+	var warning_message = ""
+	var warning_color = Color(1.0, 0.4, 0.1)
+	
+	if previous_state != DeviceState.OVERVOLTAGE and current_state == DeviceState.OVERVOLTAGE:
+		should_warn = true
+		warning_message = "⚡ SOBREVOLTAJE: %s (%.1fV)" % [name, voltage_in]
+		warning_color = Color(1.0, 0.6, 0.2)
+	
+	elif previous_state != DeviceState.BROKEN and current_state == DeviceState.BROKEN:
+		should_warn = true
+		warning_message = "💥 QUEMADO: %s" % name
+		warning_color = Color(1.0, 0.2, 0.1)
+	
+	if should_warn and _warning_cooldown <= 0.0:
+		_spawn_warning(warning_message, warning_color)
+		_warning_cooldown = WARNING_COOLDOWN
+
+func _spawn_warning(message: String, color: Color) -> void:
+	var spawn_pos: Vector2
+	if visual_sprite:
+		spawn_pos = visual_sprite.global_position + Vector2(0, -60)
+	else:
+		spawn_pos = global_position + Vector2(0, -40)
+	
+	WarningParticle.create_warning(get_tree().current_scene.get_node("world"), spawn_pos, message, color, warning_config)
 
 func _process(delta: float) -> void:
-	super._process(delta) 
+	super._process(delta)
+	
+	# Incrementar cronómetro del decaimiento exponencial de inrush
+	if is_inrush_active:
+		var effective_tau: float = inrush_tau
+		if effective_tau < 0.0:
+			effective_tau = INRUSH_PROFILES[device_class][1]
+		inrush_time_elapsed += delta * Globals.time_scale
+		# Cuando exp(-t/τ) ≈ 0 (después de 5τ), el multiplicador es ~1.006 (despreciable)
+		if inrush_time_elapsed > effective_tau * 5.0:
+			is_inrush_active = false
+			inrush_time_elapsed = 0.0
+			get_tree().call_group("power_sources", "update_network")
+	
+	# Update warning cooldown
+	if _warning_cooldown > 0.0:
+		_warning_cooldown -= delta * Globals.time_scale
 	
 	if visual_sprite:
 		match current_state:

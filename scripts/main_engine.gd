@@ -7,12 +7,21 @@ extends Node
 @onready var manual_sun_toggle: CheckButton = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/manual_sun_toggle
 @onready var day_night_cycle: Node = $world/DayNightCycle
 @onready var chart: Control = $CanvasLayer/UI/Panel/Chart
+@onready var time_scale_slider: HSlider = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box/time_scale_slider
+@onready var time_scale_value_label: Label = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box/time_scale_value
+@onready var warning_toggle: CheckButton = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3/warning_toggle
 
 const HISTORY_SIZE := 80
 const SAMPLE_INTERVAL := 0.15
 
 var voltage_history: PackedFloat32Array
 var sample_timer: float = 0.0
+
+# UPS Demo
+var ups_node: UninterruptiblePowerSupply = null
+var power_failure_timer: float = 0.0
+var is_power_failure_active: bool = false
+var saved_voltage: float = 220.0
 
 
 func _ready() -> void:
@@ -22,6 +31,9 @@ func _ready() -> void:
 		day_night_cycle.sun_info_changed.connect(_on_sun_info_changed)
 	# Overlay pedagógico (tecla H): muestra al usuario las hipótesis del modelo
 	PedagogicalOverlay.create_and_attach(self)
+	
+	# Buscar nodo UPS en Casa 1 para la demo de apagón
+	ups_node = $world/Electrics/casa1_cableado/UPS
 
 
 func update_ui_label(voltage: float) -> void:
@@ -34,6 +46,12 @@ func _process(delta: float) -> void:
 		sample_timer = 0.0
 		record_sample(v_slider.value)
 		update_current_label()
+	
+	# Manejar timer de simulación de apagón
+	if is_power_failure_active:
+		power_failure_timer -= delta
+		if power_failure_timer <= 0.0:
+			_end_power_failure_simulation()
 
 func update_current_label() -> void:
 	# Suma la corriente de todas las power_sources (típicamente una sola).
@@ -65,6 +83,13 @@ func _on_reset_button_down() -> void:
 
 func _on_details_toggled(toggled_on: bool) -> void:
 	get_tree().call_group("electrical_components", "set_details_visible", toggled_on)
+
+
+func _on_expand_all_details_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		get_tree().call_group("electrical_components", "expand_all_details")
+	else:
+		get_tree().call_group("electrical_components", "collapse_all_details")
 
 
 func _on_toggle_all_devices_toggled(toggled_on: bool) -> void:
@@ -145,3 +170,61 @@ func _on_chart_draw() -> void:
 
 		var last_y: float = (1.0 - (voltage_history[-1] - min_v) / range_v) * h
 		chart.draw_circle(Vector2(w, last_y), 3.5, Color(1, 1, 1, 0.9))
+
+
+# --- UPS POWER FAILURE DEMO ---
+
+## Simula un apagón de 5 segundos para demostrar la protección del UPS.
+## La red eléctrica cae a 0V, pero el UPS mantiene las cargas de Casa 1.
+func _on_power_failure_demo_button_down() -> void:
+	if is_power_failure_active:
+		return
+	
+	is_power_failure_active = true
+	power_failure_timer = 5.0  # 5 segundos de apagón simulado
+	
+	# Guardar voltaje actual para restaurar después
+	saved_voltage = v_slider.value
+	
+	# Forzar voltaje a 0 (simular apagón total)
+	v_slider.value = 0.0
+	update_ui_label(0.0)
+	Globals.global_voltage_changed.emit(0.0)
+	
+	print("[DEMO] ⚡ APAGÓN SIMULADO INICIADO (5 segundos)")
+
+## Finaliza la simulación de apagón y restaura el voltaje anterior.
+func _end_power_failure_simulation() -> void:
+	is_power_failure_active = false
+	
+	# Restaurar voltaje anterior
+	v_slider.value = saved_voltage
+	update_ui_label(saved_voltage)
+	Globals.global_voltage_changed.emit(saved_voltage)
+	
+	print("[DEMO] ⚡ APAGÓN SIMULADO TERMINADO (voltaje restaurado a %.1f V)" % saved_voltage)
+
+
+# --- TIME SCALE CONTROL ---
+
+## Maneja el cambio del slider de escala de tiempo.
+func _on_time_scale_slider_value_changed(value: float) -> void:
+	var scale: float = value
+	if time_scale_value_label:
+		time_scale_value_label.text = "%.0fx" % scale
+	
+	# Aplicar escala global
+	Globals.time_scale = scale
+	
+	# Aplicar escala al UPS si está disponible
+	if ups_node:
+		ups_node.set_time_scale(scale)
+	
+	# Aplicar escala al ciclo día/noche
+	if day_night_cycle and day_night_cycle.has_method("set_time_scale"):
+		day_night_cycle.set_time_scale(scale)
+
+
+func _on_warning_toggle_toggled(toggled_on: bool) -> void:
+	Globals.show_overheating_warnings = toggled_on
+	Globals.warning_visibility_changed.emit(toggled_on)

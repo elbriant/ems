@@ -8,7 +8,16 @@ El objetivo es simular en tiempo real el comportamiento de una red eléctrica do
 
 ---
 
-## 2. Arquitectura de Nodos y Filosofía de Diseño
+## 2. Objetivos Específicos del Proyecto
+
+1. **Análisis de Parámetros Eléctricos:** Analizar los parámetros de consumo residencial, la tolerancia de los equipos y la capacidad de conducción según el calibre del cableado.
+2. **Modelado Matemático con Variable Estocástica:** Programar en GDScript los algoritmos matemáticos que modelan la tensión y estrés de dispositivos electrónicos mediante variables estocásticas.
+3. **Interfaz Gráfica Interactiva:** Modelar una interfaz gráfica interactiva en Godot Engine para visualizar en tiempo real la carga de los circuitos y las alertas de sobrecalentamiento.
+4. **Validación de Dispositivos de Protección:** Validar mediante el simulador la efectividad de implementar dispositivos de protección virtual como reguladores de voltaje, protectores de picos y sistemas UPS.
+
+---
+
+## 3. Arquitectura de Nodos y Filosofía de Diseño (ya existente)
 
 El proyecto sigue una estricta **Separación de Preocupaciones (Separation of Concerns)** entre la lógica matemática y la representación visual.
 
@@ -22,7 +31,7 @@ El proyecto sigue una estricta **Separación de Preocupaciones (Separation of Co
 
 ---
 
-## 3. Físicas y Matemáticas Centrales
+## 4. Físicas y Matemáticas Centrales
 
 El motor de simulación se basa en cálculos reales de circuitos de corriente continua/alterna simplificada. 
 
@@ -31,10 +40,16 @@ El motor de simulación se basa en cálculos reales de circuitos de corriente co
 * **Resistencia Dinámica:** * Un dispositivo en estado óptimo calcula su resistencia interna basándose en sus valores nominales: $R = \frac{V_{nom}^2}{P_{nom}}$.
     * Si un dispositivo está apagado (OFF) o quemado (BROKEN), simulamos un circuito abierto asignando una resistencia infinita: $R = \infty$ (en GDScript: `INF`), lo que fuerza la corriente a 0 A.
 * **Estrés Térmico (Cables):** Se calcula como una relación entre el flujo actual y el límite físico del cable: $\text{Estrés} = \frac{I_{actual}}{I_{max}}$. Valores $> 1.0$ provocan sobrecarga visual (temblor y enrojecimiento).
+* **Corriente de Irrupción (Inrush Current):** Modelo de decaimiento exponencial que simula el pico de corriente al encender un dispositivo:
+    * Fórmula: $I(t) = I_{nom} \times (k \cdot e^{-\frac{t}{\tau}} + 1)$
+    * $k$: Multiplicador extra del pico (pico total = $k+1$ veces la nominal).
+    * $\tau$ (tau): Constante de tiempo que define la velocidad de decaimiento.
+    * Perfiles por clase de dispositivo en `INRUSH_PROFILES` (SMPS: k=29/τ=0.015s, Incandescente: k=11/τ=0.04s, Motor: k=6/τ=0.25s, Compresor: k=5/τ=0.8s, Mixto: k=1.5/τ=0.1s).
+    * Optimización: El efecto se corta cuando $t > 5\tau$ (multiplicador ≈ 1.006, despreciable).
 
 ---
 
-## 4. Clases Principales y Jerarquía
+## 5. Clases Principales y Jerarquía
 
 ### `ElectricalComponent` (Clase Base)
 * **Hereda de:** `Node2D`
@@ -65,9 +80,27 @@ El motor de simulación se basa en cálculos reales de circuitos de corriente co
 * **Hereda de:** `Node2D`
 * **Responsabilidad:** Es el nodo raíz del árbol eléctrico. Inicia los pulsos de cálculo (`update_network`) hacia sus hijos conectados.
 
+### `UninterruptiblePowerSupply` (UPS)
+* **Hereda de:** `ElectricalComponent`
+* **Responsabilidad:** Proporcionar respaldo energético mediante batería durante apagones. Modela un UPS residencial básico con transferencia automática.
+* **Jerarquía en la red:** `ElectricalSource → VoltageRegulator → UPS → ElectricalDistributionPanel`
+* **Modos de operación:**
+    * `NORMAL`: Red estable, pasa voltaje directamente. Carga batería si < 100%.
+    * `CHARGING`: Red estable pero batería < 100%, mostrando progreso de carga.
+    * `BATTERY`: Red caída, UPS activa batería e inversor para mantener cargas.
+    * `LOW_BATTERY`: Batería < 20%, aviso de apagón inminente.
+    * `OVERLOAD`: Carga excede capacidad máxima del UPS (1500VA).
+    * `OFF`: Sin batería disponible, apagado total.
+* **Parámetros clave:**
+    * `battery_capacity_wh`: Capacidad en Wh (típico: 1500Wh para residencial).
+    * `max_output_power`: Potencia máxima de salida en VA.
+    * `blackout_threshold`: Umbral de voltaje para activar batería (0.85 = 85%).
+    * `reconnect_voltage`: Voltaje mínimo para volver a red (190V).
+* **Demo de apagón:** Botón "Simular Apagón (5s)" en UI fuerza voltaje a 0 por 5 segundos para validar protección.
+
 ---
 
-## 5. Sistema de Comunicación (Señales y Grupos)
+## 6. Sistema de Comunicación (Señales y Grupos)
 
 Para evitar referencias cruzadas (Spaghetti Code), el simulador usa los "Grupos" de Godot (SceneTree Groups) para comunicaciones ascendentes o globales:
 
@@ -76,7 +109,7 @@ Para evitar referencias cruzadas (Spaghetti Code), el simulador usa los "Grupos"
 
 ---
 
-## 6. Reglas de Desarrollo y Prevención de Errores Comunes (Godot Quirks)
+## 7. Reglas de Desarrollo y Prevención de Errores Comunes (Godot Quirks)
 
 Si un Agente (IA) o desarrollador humano va a modificar este código, DEBE seguir estas reglas:
 

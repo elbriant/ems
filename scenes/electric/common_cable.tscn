@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://cejn17doxmlar" path="res://scripts/elements/cable.gd" id="1_u513i"]
 [ext_resource type="Gradient" uid="uid://b5m2vd3rpglyr" path="res://resources/cable_gradient.tres" id="2_j7pwj"]
 [ext_resource type="Script" uid="uid://dbpj64ascmwkt" path="res://scripts/electric/electrical_wire.gd" id="3_kwmp5"]
+[ext_resource type="Script" uid="uid://d0mk083breteo" path="res://scripts/particles/cable_flow_effect.gd" id="4_cable_fx"]
+[ext_resource type="Texture2D" uid="uid://85d8eigsfqd4" path="res://assets/particle.png" id="5_ovdmd"]
 
 [node name="Cable" type="Node2D" unique_id=1395353587]
 script = ExtResource("3_kwmp5")
@@ -18,3 +20,12 @@ script = ExtResource("1_u513i")
 electrical_wire = NodePath("..")
 stress_gradient = ExtResource("2_j7pwj")
 metadata/_custom_type_script = "uid://cejn17doxmlar"
+
+[node name="CableFlowEffect" type="Node2D" parent="Cable_comun" unique_id=2070725497 node_paths=PackedStringArray("cable_line", "electrical_wire")]
+script = ExtResource("4_cable_fx")
+cable_line = NodePath("..")
+electrical_wire = NodePath("../..")
+particle_texture = ExtResource("5_ovdmd")
+particle_scale = 3.68
+spread_degrees = 2.0
+damping_force = 80.0

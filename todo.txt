@@ -1,0 +1,14 @@
+‎1.  Analizar los parámetros de consumo residencial, la tolerancia de los equipos y la capacidad de conducción según el calibre del cableado.
+‎2. Programar en GDScript los algoritmos matemáticos que modelan la tensión y estrés de dispositivos electronicos mediante la variable estocástica.
+‎3. Modelar una interfaz gráfica interactiva en Godot Engine para visualizar en tiempo real la carga de los circuitos y las alertas de sobrecalentamiento.
+‎4. Validar mediante el simulador la efectividad de implementar dispositivos de protección virtual como reguladores de voltaje, protectores de picos y sistemas UPS.
+
+
+TODO:
+
+- Añadir sistema de UPS para validar la efectividad de implementar dispositivos de protección virtual ✅  
+- Añadir particulas para efectos visuales bonitos :) ✅
+- Mostrar las alertas de sobrecalentamiento como particulas tambien (texto flotante que desaparece) ✅
+- mejorar la interfaz, hacer que el detalle que se abre tenga un z-index mayor ✅
+- interruptor de corriente, para encender apagar cables y asi hacer circuitos de luz ✅
+

@@ -22,6 +22,7 @@ signal sun_info_changed(hour: float, rotation_deg: float)
 var elapsed_seconds: float = 0.0
 var is_manual_mode: bool = false
 var manual_hour: float = 12.0
+var time_scale: float = 1.0
 
 @onready var canvas_modulate: CanvasModulate = $"../decorations/CanvasModulate"
 @onready var directional_light: DirectionalLight2D = $"../decorations/DirectionalLight2D"
@@ -34,7 +35,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if not is_manual_mode:
-		elapsed_seconds = fmod(elapsed_seconds + delta, cycle_duration)
+		elapsed_seconds = fmod(elapsed_seconds + delta * time_scale, cycle_duration)
 	_update_cycle()
 
 
@@ -45,6 +46,14 @@ func set_manual_mode(enabled: bool) -> void:
 func set_manual_hour(hour: float) -> void:
 	manual_hour = hour
 	_update_cycle()
+
+
+func set_time_scale(scale: float) -> void:
+	time_scale = maxf(scale, 1.0)
+
+
+func get_time_scale() -> float:
+	return time_scale
 
 
 func _update_cycle() -> void:

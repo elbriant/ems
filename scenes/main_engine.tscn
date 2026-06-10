@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://dfao1nv5mrsqd"]
 
 [ext_resource type="Script" uid="uid://dche5hjgt5ikc" path="res://scripts/main_engine.gd" id="1_smoar"]
+[ext_resource type="PackedScene" path="res://scenes/electric/common_switch.tscn" id="1_sw"]
 [ext_resource type="Texture2D" uid="uid://cy8hch0y2lpab" path="res://assets/parallax/sky.png" id="2_xvnu0"]
+[ext_resource type="Texture2D" uid="uid://85d8eigsfqd4" path="res://assets/particle.png" id="3_1xgia"]
 [ext_resource type="Texture2D" uid="uid://b2hp6ktem4lyi" path="res://assets/transformador.png" id="3_jpnxc"]
 [ext_resource type="Texture2D" uid="uid://begjdx320b0wu" path="res://assets/chozas/choza_1.png" id="3_p0sv3"]
 [ext_resource type="Script" uid="uid://mqyhvmqavfd7" path="res://scripts/camera.gd" id="3_rwauq"]
@@ -16,10 +18,11 @@
 [ext_resource type="Script" uid="uid://slqwam3edxp8" path="res://scripts/electric/voltage_regulator.gd" id="12_4f4dr"]
 [ext_resource type="Script" uid="uid://c4plbf7guq4a1" path="res://scripts/electric/electrical_distribution_panel.gd" id="12_h31jv"]
 [ext_resource type="Script" uid="uid://h33iig25n5xo" path="res://scripts/electric/branch_circuit.gd" id="13_4f4dr"]
-[ext_resource type="PackedScene" uid="uid://o4mkde2w7i5m" path="res://scenes/electric/common_panel.tscn" id="14_5rlws"]
-[ext_resource type="PackedScene" uid="uid://cn0dj3ph1q5wx" path="res://scenes/electric/common_distribution_panel.tscn" id="15_dpanel"]
 [ext_resource type="Texture2D" uid="uid://bdpsvdxxnf7kp" path="res://assets/lights/64x64 textures  (2).png" id="15_8bnuv"]
+[ext_resource type="PackedScene" uid="uid://cn0dj3ph1q5wx" path="res://scenes/electric/common_distribution_panel.tscn" id="15_dpanel"]
 [ext_resource type="Script" uid="uid://fi2jjbtxplcu" path="res://scripts/day_night_cycle.gd" id="16_cyc"]
+[ext_resource type="Script" uid="uid://ogvue7wphljq" path="res://scripts/electric/uninterruptible_power_supply.gd" id="17_ups"]
+[ext_resource type="Script" uid="uid://bx618v7nesgo7" path="res://scripts/particles/ambient_particles_effect.gd" id="18_ambient"]
 
 [sub_resource type="Gradient" id="Gradient_5rlws"]
 offsets = PackedFloat32Array(0, 0.4767928, 1)
@@ -83,25 +86,6 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_4f4dr")
-
-[node name="VoltageGradientBg" type="TextureRect" parent="CanvasLayer/UI/Panel" unique_id=247717212]
-visible = false
-modulate = Color(1, 1, 1, 0.49803922)
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -81.0
-offset_top = -124.0
-offset_right = -21.0
-offset_bottom = -14.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-texture = SubResource("GradientTexture2D_voltage")
-expand_mode = 3
 
 [node name="VSlider" type="VSlider" parent="CanvasLayer/UI/Panel" unique_id=264478764]
 layout_mode = 1
@@ -178,14 +162,31 @@ layout_mode = 2
 toggle_mode = true
 text = "Ver detalles"
 
+[node name="expand_all_details" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1715277934]
+layout_mode = 2
+toggle_mode = true
+text = "Expandir todo"
+
 [node name="toggle_all_devices" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1095669957]
 layout_mode = 2
 toggle_mode = true
 text = "Activar/Desactivar todos"
 
-[node name="washer_demo" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1095669958]
+[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer" unique_id=1396474698]
+layout_mode = 2
+
+[node name="washer_demo" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3" unique_id=1184629525]
 layout_mode = 2
 text = "🚿 Encender lavadoras"
+
+[node name="power_failure_demo" type="Button" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3" unique_id=1609463283]
+layout_mode = 2
+text = "⚡ Simular Apagón (5s)"
+
+[node name="warning_toggle" type="CheckButton" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3" unique_id=987654321]
+layout_mode = 2
+button_pressed = true
+text = "🔥 Mostrar alertas calor"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer" unique_id=1596429476]
 layout_mode = 2
@@ -213,6 +214,27 @@ text = "Angulo: N/A"
 layout_mode = 2
 text = "Fijar sol"
 
+[node name="time_scale_box" type="HBoxContainer" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=287357818]
+layout_mode = 2
+
+[node name="time_scale_label" type="Label" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box" unique_id=1253964584]
+custom_minimum_size = Vector2(55, 0)
+layout_mode = 2
+text = "Velocidad:"
+
+[node name="time_scale_slider" type="HSlider" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box" unique_id=1662560929]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 60.0
+value = 1.0
+
+[node name="time_scale_value" type="Label" parent="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box" unique_id=677800957]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+text = "1x"
+
 [node name="Chart" type="Control" parent="CanvasLayer/UI/Panel" unique_id=1372125056]
 layout_mode = 1
 anchors_preset = 0
@@ -223,6 +245,15 @@ offset_bottom = 138.0
 mouse_filter = 2
 
 [node name="world" type="Node2D" parent="." unique_id=229086658]
+
+[node name="AmbientParticles" type="Node2D" parent="world" unique_id=1867251297]
+z_index = 100
+position = Vector2(-500, 300)
+script = ExtResource("18_ambient")
+particle_texture = ExtResource("3_1xgia")
+color_tint = Color(1, 0.95, 0.85, 0.3)
+base_scale = 6.645
+emission_area = Vector2(3000, 900)
 
 [node name="BG" type="Node2D" parent="world" unique_id=2085584896]
 metadata/_edit_lock_ = true
@@ -343,6 +374,12 @@ position = Vector2(-1004, 51)
 [node name="VoltageRegulator" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=2032469552 node_paths=PackedStringArray("connected_components")]
 position = Vector2(-557, 119)
 script = ExtResource("12_4f4dr")
+connected_components = [NodePath("../UPS")]
+
+[node name="UPS" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=1688063241 node_paths=PackedStringArray("connected_components")]
+position = Vector2(-555, 100)
+script = ExtResource("17_ups")
+battery_capacity_wh = 100.0
 connected_components = [NodePath("../ElectricalDistribiutionPanel")]
 
 [node name="ElectricalDistribiutionPanel" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=1992293256 node_paths=PackedStringArray("phase_1_circuits", "phase_2_circuits", "biphasic_circuits")]
@@ -382,11 +419,15 @@ metadata/_custom_type_script = "uid://h33iig25n5xo"
 
 [node name="Fase1Cable110v" parent="world/Electrics/casa1_cableado" unique_id=2014134022 node_paths=PackedStringArray("connected_components") instance=ExtResource("8_y5x8j")]
 position = Vector2(-543, -19)
-connected_components = [NodePath("../luminaria/Bombillo5"), NodePath("../luminaria/Bombillo6"), NodePath("../luminaria/Bombillo7"), NodePath("../luminaria/Bombillo8"), NodePath("../luminaria/Bombillo9"), NodePath("../luminaria/Bombillo"), NodePath("../luminaria/Bombillo2"), NodePath("../luminaria/Bombillo3"), NodePath("../luminaria/Bombillo4")]
+connected_components = [NodePath("../InterruptorLuz")]
 
 [node name="Cable_comun" parent="world/Electrics/casa1_cableado/Fase1Cable110v" index="0" unique_id=944044291]
 position = Vector2(-2079, 318)
 points = PackedVector2Array(0, 0, 54, -58, 906, -62, 1151, -67, 904, -60, 907, -346, 1017, -347, 247, -347)
+
+[node name="InterruptorLuz" parent="world/Electrics/casa1_cableado" unique_id=884673688 node_paths=PackedStringArray("connected_components") instance=ExtResource("1_sw")]
+position = Vector2(-543, -80)
+connected_components = [NodePath("../luminaria/Bombillo5"), NodePath("../luminaria/Bombillo6"), NodePath("../luminaria/Bombillo7"), NodePath("../luminaria/Bombillo8"), NodePath("../luminaria/Bombillo9"), NodePath("../luminaria/Bombillo"), NodePath("../luminaria/Bombillo2"), NodePath("../luminaria/Bombillo3"), NodePath("../luminaria/Bombillo4")]
 
 [node name="luminaria" type="Node2D" parent="world/Electrics/casa1_cableado" unique_id=1838580111]
 
@@ -429,10 +470,10 @@ points = PackedVector2Array(64, 50, 601, 142)
 position = Vector2(40, 183)
 nominal_voltage = 220.0
 nominal_power = 1550.0
+device_class = 2
 has_switch = true
 is_switched_on = false
 is_washer = true
-device_class = 1
 
 [node name="Sprite2D" parent="world/Electrics/casa1_cableado/Lavadora" index="0" unique_id=2041175647]
 position = Vector2(1, -3.500001)
@@ -467,10 +508,9 @@ default_color = Color(0.99999994, 0.6433259, 0.38100162, 1)
 [node name="casa2_cableado" type="Node2D" parent="world/Electrics" unique_id=1089561009]
 position = Vector2(933, 28)
 
-[node name="ElectricalDistributionPanel" parent="world/Electrics/casa2_cableado" unique_id=451169415 node_paths=PackedStringArray("phase_1_circuits", "phase_2_circuits", "biphasic_circuits") instance=ExtResource("15_dpanel")]
+[node name="ElectricalDistributionPanel" parent="world/Electrics/casa2_cableado" unique_id=451169415 node_paths=PackedStringArray("phase_1_circuits") instance=ExtResource("15_dpanel")]
 position = Vector2(-632, 103)
 phase_1_circuits = [NodePath("BLumi")]
-metadata/_custom_type_script = "uid://c4plbf7guq4a1"
 
 [node name="BLumi" type="Node" parent="world/Electrics/casa2_cableado/ElectricalDistributionPanel" unique_id=851169415 node_paths=PackedStringArray("connected_components")]
 script = ExtResource("13_4f4dr")
@@ -531,7 +571,6 @@ position = Vector2(-3184, 133)
 phase_1_circuits = [NodePath("BLumi"), NodePath("BElectronicos")]
 phase_2_circuits = [NodePath("BElectronicos")]
 biphasic_circuits = [NodePath("B220V")]
-metadata/_custom_type_script = "uid://c4plbf7guq4a1"
 
 [node name="BLumi" type="Node" parent="world/Electrics/casa3_cableado/ElectricalDistributionPanel" unique_id=92862242 node_paths=PackedStringArray("connected_components")]
 script = ExtResource("13_4f4dr")
@@ -544,8 +583,6 @@ metadata/_custom_type_script = "uid://h33iig25n5xo"
 [node name="BElectronicos" type="Node" parent="world/Electrics/casa3_cableado/ElectricalDistributionPanel" unique_id=92862243 node_paths=PackedStringArray("connected_components")]
 script = ExtResource("13_4f4dr")
 circuit_name = "Electronicos"
-rated_current = 20.0
-magnetic_curve = 1
 connected_components = [NodePath("../../fase2_electronicos/Fase2")]
 metadata/_custom_type_script = "uid://h33iig25n5xo"
 
@@ -694,11 +731,10 @@ default_color = Color(0.9681842, 0.30959326, 0.7836234, 1)
 [node name="Dispositivo" parent="world/Electrics/casa3_cableado/220v" unique_id=206941707 instance=ExtResource("11_u8t1u")]
 position = Vector2(-2486, 452)
 nominal_voltage = 220.0
-nominal_power = 1000.0
+device_class = 1
 has_switch = true
 is_switched_on = false
 is_washer = true
-device_class = 1
 
 [node name="Sprite2D" parent="world/Electrics/casa3_cableado/220v/Dispositivo" index="0" unique_id=2041175647]
 position = Vector2(0.9999294, -6.0000124)
@@ -722,7 +758,6 @@ position = Vector2(-625, 101)
 phase_1_circuits = [NodePath("BLumi")]
 phase_2_circuits = [NodePath("BElectronicos")]
 biphasic_circuits = [NodePath("BLavadora")]
-metadata/_custom_type_script = "uid://c4plbf7guq4a1"
 
 [node name="BLumi" type="Node" parent="world/Electrics/casa4_cableado/ElectricalDistributionPanel" unique_id=17556889 node_paths=PackedStringArray("connected_components")]
 script = ExtResource("13_4f4dr")
@@ -735,8 +770,6 @@ metadata/_custom_type_script = "uid://h33iig25n5xo"
 [node name="BElectronicos" type="Node" parent="world/Electrics/casa4_cableado/ElectricalDistributionPanel" unique_id=17556890 node_paths=PackedStringArray("connected_components")]
 script = ExtResource("13_4f4dr")
 circuit_name = "Electronicos"
-rated_current = 20.0
-magnetic_curve = 1
 connected_components = [NodePath("../../Fase2")]
 metadata/_custom_type_script = "uid://h33iig25n5xo"
 
@@ -846,10 +879,10 @@ default_color = Color(0.9999998, 0.14810753, 0.64295584, 1)
 position = Vector2(2946, 458)
 nominal_voltage = 220.0
 nominal_power = 2000.0
+device_class = 1
 has_switch = true
 is_switched_on = false
 is_washer = true
-device_class = 1
 
 [node name="Sprite2D" parent="world/Electrics/casa4_cableado/220v/lavadora" index="0" unique_id=2041175647]
 position = Vector2(-5.5001187, -13.999998)
@@ -882,14 +915,19 @@ max_zoom = 2.0
 [connection signal="value_changed" from="CanvasLayer/UI/Panel/VSlider" to="." method="_on_v_slider_value_changed"]
 [connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/reset" to="." method="_on_reset_button_down"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/details" to="." method="_on_details_toggled"]
+[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/expand_all_details" to="." method="_on_expand_all_details_toggled"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/toggle_all_devices" to="." method="_on_toggle_all_devices_toggled"]
-[connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer/washer_demo" to="." method="_on_washer_demo_button_down"]
+[connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3/washer_demo" to="." method="_on_washer_demo_button_down"]
+[connection signal="button_down" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3/power_failure_demo" to="." method="_on_power_failure_demo_button_down"]
+[connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3/warning_toggle" to="." method="_on_warning_toggle_toggled"]
 [connection signal="value_changed" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/sun_hour_box/sun_slider" to="." method="_on_sun_slider_value_changed"]
 [connection signal="toggled" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/manual_sun_toggle" to="." method="_on_manual_sun_toggled"]
+[connection signal="value_changed" from="CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box/time_scale_slider" to="." method="_on_time_scale_slider_value_changed"]
 [connection signal="draw" from="CanvasLayer/UI/Panel/Chart" to="." method="_on_chart_draw"]
 
 [editable path="world/Electrics/CableExternoCasa1"]
 [editable path="world/Electrics/casa1_cableado/Fase1Cable110v"]
+[editable path="world/Electrics/casa1_cableado/InterruptorLuz"]
 [editable path="world/Electrics/casa1_cableado/CableLavadora"]
 [editable path="world/Electrics/casa1_cableado/Lavadora"]
 [editable path="world/Electrics/casa1_cableado/CableSala"]

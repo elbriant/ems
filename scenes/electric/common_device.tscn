@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cej56u4veatyw"]
 
 [ext_resource type="Script" uid="uid://dpcvyigv6kvrl" path="res://scripts/electric/electrical_consumer.gd" id="1_rino5"]
+[ext_resource type="Script" path="res://scripts/particles/device_overload_effect.gd" id="2_overload_fx"]
 
 [sub_resource type="Gradient" id="Gradient_rino5"]
 offsets = PackedFloat32Array(0)
@@ -17,3 +18,6 @@ metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=2041175647]
 texture_repeat = 2
 texture = SubResource("GradientTexture2D_yhvfr")
+
+[node name="DeviceOverloadEffect" type="Node2D" parent="."]
+script = ExtResource("2_overload_fx")

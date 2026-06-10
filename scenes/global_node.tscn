@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c7wsgjycd75yh"]
+
+[ext_resource type="Script" uid="uid://bct7ul2r20dc0" path="res://scripts/globals.gd" id="1_xvru0"]
+[ext_resource type="Resource" uid="uid://bkto72kcmsaij" path="res://resources/default_warning_config.tres" id="2_cmiys"]
+
+[node name="GlobalNode" type="Node" unique_id=1015630672]
+script = ExtResource("1_xvru0")
+default_warning_config = ExtResource("2_cmiys")
