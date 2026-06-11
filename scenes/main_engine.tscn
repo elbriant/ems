@@ -632,6 +632,7 @@ metadata/_custom_type_script = "uid://h33iig25n5xo"
 
 [node name="F2" type="Node" parent="world/Electrics/Choza 2/Panel Choza 2" unique_id=1540169969 node_paths=PackedStringArray("connected_components")]
 script = ExtResource("13_4f4dr")
+rated_current = 25.0
 magnetic_curve = 2
 connected_components = [NodePath("../../Cable F2 abajo"), NodePath("../../Cable F2B abajo2")]
 metadata/_custom_type_script = "uid://h33iig25n5xo"
