@@ -20,10 +20,28 @@ class_name AmbientParticlesEffect
 @export var drift_speed: float = 10.0
 ## Vida de cada partícula
 @export var particle_lifetime: float = 5.0
+## Ángulo de dispersión (grados, 180 = omnidireccional)
+@export_range(0, 180) var spread: float = 180.0
+## Gravedad que afecta las partículas
+@export var gravity: Vector3 = Vector3.ZERO
+
+@export_category("Rotación y Color")
+## Velocidad angular mínima (grados/s)
+@export var angular_velocity_min: float = -10.0
+## Velocidad angular máxima (grados/s)
+@export var angular_velocity_max: float = 10.0
+## Variación de tono (matiz) mínima (-1 a 1)
+@export_range(-1, 1) var hue_variation_min: float = 0.0
+## Variación de tono (matiz) máxima (-1 a 1)
+@export_range(-1, 1) var hue_variation_max: float = 0.0
+
+@export_category("Parallax")
 ## Fuerza del efecto parallax (0 = sin parallax, 1 = mucho)
 @export_range(0, 1) var parallax_strength: float = 0.3
 
 @export_category("Material (Advanced)")
+## Si asignas un material, se duplica y se le aplican los parámetros de arriba encima.
+## Los parámetros no cubiertos por exports (como color_ramp) quedan del material.
 @export var custom_material: ParticleProcessMaterial
 
 var _gpu_particles: GPUParticles2D
@@ -42,7 +60,8 @@ func _setup() -> void:
 
 	var mat: ParticleProcessMaterial
 	if custom_material:
-		mat = custom_material
+		mat = custom_material.duplicate()
+		_apply_exports_to_material(mat)
 	else:
 		mat = _create_default_material()
 
@@ -58,23 +77,11 @@ func _setup() -> void:
 func _create_default_material() -> ParticleProcessMaterial:
 	var mat: ParticleProcessMaterial = ParticleProcessMaterial.new()
 
-	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-	mat.set("emission_box_extents", Vector3(
-		emission_area.x * 0.5, emission_area.y * 0.5, 0
-	))
-
+	# Dirección base (hacia arriba sutil)
 	mat.direction = Vector3(0, -0.5, 0)
-	mat.spread = 180.0
-	mat.initial_velocity_min = drift_speed * 0.5
-	mat.initial_velocity_max = drift_speed * 1.5
-	mat.gravity = Vector3(0, 0, 0)
-	mat.scale_min = base_scale * (1.0 - scale_variation)
-	mat.scale_max = base_scale * (1.0 + scale_variation)
-	mat.color = color_tint
-	mat.angular_velocity_min = -10.0
-	mat.angular_velocity_max = 10.0
+	_apply_exports_to_material(mat)
 
-	# Fade in/out
+	# Fade in/out (solo en material por defecto, no se toca con custom)
 	var grad: Gradient = Gradient.new()
 	grad.offsets = PackedFloat32Array([0.0, 0.15, 0.85, 1.0])
 	grad.colors = PackedColorArray([
@@ -88,6 +95,32 @@ func _create_default_material() -> ParticleProcessMaterial:
 	mat.color_ramp = tex
 
 	return mat
+
+func _apply_exports_to_material(mat: ParticleProcessMaterial) -> void:
+	# Emisión
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.set("emission_box_extents", Vector3(
+		emission_area.x * 0.5, emission_area.y * 0.5, 0
+	))
+	mat.spread = spread
+	mat.initial_velocity_min = drift_speed * 0.5
+	mat.initial_velocity_max = drift_speed * 1.5
+	mat.gravity = gravity
+
+	# Escala
+	mat.scale_min = base_scale * (1.0 - scale_variation)
+	mat.scale_max = base_scale * (1.0 + scale_variation)
+
+	# Color
+	mat.color = color_tint
+
+	# Rotación
+	mat.angular_velocity_min = angular_velocity_min
+	mat.angular_velocity_max = angular_velocity_max
+
+	# Variación de tono
+	mat.hue_variation_min = hue_variation_min
+	mat.hue_variation_max = hue_variation_max
 
 func _make_default_texture() -> ImageTexture:
 	var img: Image = Image.create(8, 8, false, Image.FORMAT_RGBA8)

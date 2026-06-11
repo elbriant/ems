@@ -10,6 +10,8 @@ extends Node
 @onready var time_scale_slider: HSlider = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box/time_scale_slider
 @onready var time_scale_value_label: Label = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer2/time_scale_box/time_scale_value
 @onready var warning_toggle: CheckButton = $CanvasLayer/UI/Panel/MarginContainer/HBoxContainer/VBoxContainer3/warning_toggle
+@onready var ui_layer: CanvasLayer = $CanvasLayer
+@onready var ui_toggle_button: CheckButton = $UIToggleLayer/UIToggleButton
 
 const HISTORY_SIZE := 80
 const SAMPLE_INTERVAL := 0.15
@@ -228,3 +230,8 @@ func _on_time_scale_slider_value_changed(value: float) -> void:
 func _on_warning_toggle_toggled(toggled_on: bool) -> void:
 	Globals.show_overheating_warnings = toggled_on
 	Globals.warning_visibility_changed.emit(toggled_on)
+
+
+func _on_ui_toggle_toggled(toggled_on: bool) -> void:
+	ui_layer.visible = toggled_on
+	ui_toggle_button.text = "Mostrar UI" if not toggled_on else "Ocultar UI"

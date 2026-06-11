@@ -23,6 +23,10 @@ Globals="*uid://c7wsgjycd75yh"
 
 window/stretch/mode="canvas_items"
 
+[gui]
+
+theme/custom="uid://b0bqtcp83pt04"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

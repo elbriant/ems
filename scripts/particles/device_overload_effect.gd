@@ -73,7 +73,7 @@ func _setup() -> void:
 	
 	# Configurar material
 	if custom_material:
-		_process_material = custom_material
+		_process_material = custom_material.duplicate()
 	else:
 		_create_default_material()
 	

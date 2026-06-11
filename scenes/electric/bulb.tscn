@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dpcvyigv6kvrl" path="res://scripts/electric/electrical_consumer.gd" id="1_dqrhg"]
 [ext_resource type="Texture2D" uid="uid://brf7shkr5hqwo" path="res://assets/lights/neutral_light.webp" id="2_qghri"]
-[ext_resource type="Script" path="res://scripts/particles/device_overload_effect.gd" id="3_overload_fx"]
+[ext_resource type="Script" uid="uid://bvkjf36hiadyh" path="res://scripts/particles/device_overload_effect.gd" id="3_overload_fx"]
 
 [sub_resource type="Gradient" id="Gradient_qghri"]
 offsets = PackedFloat32Array(0, 0.44018555)
@@ -16,9 +16,10 @@ fill_from = Vector2(0.5060708, 0.4872471)
 [node name="Bombillo" type="Node2D" unique_id=93010359 node_paths=PackedStringArray("visual_sprite", "visual_light")]
 script = ExtResource("1_dqrhg")
 nominal_power = 60.0
+device_class = 0
 min_power_on_percent = 0.6
-max_safe_percent = 1.05
 burnout_percent = 1.1
+has_switch = true
 visual_sprite = NodePath("roundlight")
 visual_light = NodePath("PointLight2D")
 metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
@@ -34,5 +35,5 @@ shadow_enabled = true
 texture = ExtResource("2_qghri")
 texture_scale = 2.0
 
-[node name="DeviceOverloadEffect" type="Node2D" parent="."]
+[node name="DeviceOverloadEffect" type="Node2D" parent="." unique_id=1722315783]
 script = ExtResource("3_overload_fx")

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cej56u4veatyw"]
 
 [ext_resource type="Script" uid="uid://dpcvyigv6kvrl" path="res://scripts/electric/electrical_consumer.gd" id="1_rino5"]
-[ext_resource type="Script" path="res://scripts/particles/device_overload_effect.gd" id="2_overload_fx"]
+[ext_resource type="Script" uid="uid://bvkjf36hiadyh" path="res://scripts/particles/device_overload_effect.gd" id="2_overload_fx"]
 
 [sub_resource type="Gradient" id="Gradient_rino5"]
 offsets = PackedFloat32Array(0)
@@ -12,6 +12,8 @@ gradient = SubResource("Gradient_rino5")
 
 [node name="Dispositivo" type="Node2D" unique_id=1895436303 node_paths=PackedStringArray("visual_sprite")]
 script = ExtResource("1_rino5")
+has_switch = true
+is_switched_on = false
 visual_sprite = NodePath("Sprite2D")
 metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
 
@@ -19,5 +21,5 @@ metadata/_custom_type_script = "uid://dpcvyigv6kvrl"
 texture_repeat = 2
 texture = SubResource("GradientTexture2D_yhvfr")
 
-[node name="DeviceOverloadEffect" type="Node2D" parent="."]
+[node name="DeviceOverloadEffect" type="Node2D" parent="." unique_id=1275472140]
 script = ExtResource("2_overload_fx")
