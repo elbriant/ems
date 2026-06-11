@@ -4,11 +4,11 @@ class_name ElectricalSource
 @export_category("Configuración de Fuente")
 @export var supply_voltage: float = 220.0 # Voltaje base de la red
 ## Impedancia Thévenin equivalente de la red pública de baja tensión (Ω).
-## 0.5 Ω es un valor típico: con 220V da corriente de cortocircuito ~440A,
-## dentro del rango real de 200-1000A para instalaciones residenciales.
-## Modela la caída V_drop = I_total · Z_source, físicamente más correcto
-## que un factor ad-hoc multiplicado por la corriente.
-@export var source_impedance: float = 0.5
+## 0.25 Ω da corriente de cortocircuito ~880A, dentro del rango real de
+## 200-1000A para instalaciones residenciales. Limita la caída de tensión
+## a ≤5% bajo carga normal según IEC 60038.
+## Modela la caída V_drop = I_total · Z_source.
+@export var source_impedance: float = 0.25
 
 @export_category("Conexiones de Red")
 # Ahora sí podrás arrastrar los ElectricalWire principales a esta lista en el inspector

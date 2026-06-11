@@ -86,10 +86,11 @@ func update_electrical_state(received_voltage: float) -> void:
 	# asumiendo misma fase; en realidad es vectorial pero la magnitud es |L1 - L2|)
 	neutral_current = abs(phase_1_current - phase_2_current)
 
-	# Demanda total al cable de la calle:
-	# max(L1, L2) + bifásica (las bifásicas jalan de ambas fases, ya están contabilizadas aparte)
-	var max_phase_current: float = max(phase_1_current, phase_2_current)
-	current_draw = max_phase_current + biphasic_current
+	# Demanda total al cable de la calle (equivalente a 220V):
+	# P_total = 110·I_L1 + 110·I_L2 + 220·I_bifasica
+	# I_eq = P / 220 = (I_L1 + I_L2) / 2 + I_bifasica
+	var total_single_phase_current: float = phase_1_current + phase_2_current
+	current_draw = (total_single_phase_current / 2.0) + biphasic_current
 
 # _process se llama cada frame; usamos super para mantener la UI colapsable del padre.
 # Solo guardamos el último delta como fallback por si update_electrical_state

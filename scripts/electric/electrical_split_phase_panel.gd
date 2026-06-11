@@ -52,11 +52,14 @@ func update_electrical_state(received_voltage: float) -> void:
 	# aunque las fases estén dentro de su ampacidad.
 	neutral_current = abs(phase_1_current - phase_2_current)
 
-	# La corriente total que este tablero le pide al cable de la calle:
-	# Los equipos de 220V jalan de ambas fases.
-	# Si las fases 110V están desbalanceadas, la carga total de la casa se calcula así:
-	var max_phase_current = max(phase_1_current, phase_2_current)
-	current_draw = max_phase_current + biphasic_current
+	# La corriente total que este tablero le pide al cable de la calle (equivalente a 220V).
+	# En un sistema split-phase, la potencia total es:
+	#   P = 110·I_L1 + 110·I_L2 + 220·I_bifasica
+	# La corriente equivalente a 220V que la fuente ve es:
+	#   I_eq = P / 220 = (I_L1 + I_L2) / 2 + I_bifasica
+	# Usar max(I_L1, I_L2) sobrestima la corriente cuando las fases están desbalanceadas.
+	var total_single_phase_current: float = phase_1_current + phase_2_current
+	current_draw = (total_single_phase_current / 2.0) + biphasic_current
 
 
 func get_debug_text() -> String:

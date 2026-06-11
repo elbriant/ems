@@ -13,9 +13,11 @@ scale_max = 1.3
 hue_variation_min = -0.08000002
 hue_variation_max = 0.079999976
 
-[node name="Cable" type="Node2D" unique_id=1395353587]
+[node name="Cable" type="Node2D" unique_id=1395353587 node_paths=PackedStringArray("cable_line")]
 script = ExtResource("3_kwmp5")
 wire_gauge = 0
+calculate_length_from_line2d = true
+cable_line = NodePath("Cable_comun")
 metadata/_custom_type_script = "uid://dbpj64ascmwkt"
 
 [node name="Cable_comun" type="Line2D" parent="." unique_id=944044291 node_paths=PackedStringArray("electrical_wire")]

@@ -22,7 +22,7 @@ class_name ElectricalBreaker
 # --- ESTADO INTERNO ---
 var is_tripped: bool = false
 var trip_reason: String = ""
-var overload_integral: float = 0.0  # Integral de (I/In - 1)²·dt para curva térmica
+var overload_integral: float = 0.0  # Integral de ((I/In)² - 1)·dt para curva térmica
 
 # Umbrales de la curva IEC 60898 (constantes, no export para no llenar el inspector)
 const THERMAL_THRESHOLD_1: float = 1.13  # No dispara en <1h
@@ -71,11 +71,9 @@ func _check_trip(delta: float) -> void:
 		_trip("CORTOCIRCUITO (%.1f·In)" % ratio)
 		return
 
-	# 2) DISPARO TÉRMICO: integral I²t de la sobrecarga
-	# Modelo simplificado: tiempo de disparo t = K / (ratio - 1)²
-	# K calibrado para que a 1.30·In dispare en ~1h, a 1.45·In en ~10 min
+	# 2) DISPARO TÉRMICO: integral I²t proporcional a (ratio² - 1)
 	if ratio > THERMAL_THRESHOLD_1:
-		overload_integral += delta
+		overload_integral += delta * (ratio * ratio - 1.0)
 		# Constante de tiempo según umbral (aproximación de curva IEC)
 		var trigger_time: float
 		if ratio >= THERMAL_THRESHOLD_3:

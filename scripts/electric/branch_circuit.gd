@@ -22,7 +22,7 @@ class_name BranchCircuit
 # --- ESTADO DEL BREAKER (interno, no se exporta) ---
 var is_tripped: bool = false
 var trip_reason: String = ""
-var overload_integral: float = 0.0  # Integral I²t simplificada
+var overload_integral: float = 0.0  # Integral de ((I/In)² - 1)·dt para curva térmica
 var current_load: float = 0.0       # Última corriente que circuló (A)
 
 # Umbrales curva IEC 60898 (constantes privadas)
@@ -64,9 +64,9 @@ func _check_trip(delta: float) -> void:
 		_trip("CORTOCIRCUITO (%.1f·In)" % ratio)
 		return
 
-	# 2) Disparo térmico: integral I²t simplificada
+	# 2) Disparo térmico: integral I²t proporcional a (ratio² - 1)
 	if ratio > THERMAL_THRESHOLD_1:
-		overload_integral += delta
+		overload_integral += delta * (ratio * ratio - 1.0)
 		var trigger_time: float
 		if ratio >= THERMAL_THRESHOLD_3:
 			trigger_time = 600.0  # 10 min a 1.45·In
